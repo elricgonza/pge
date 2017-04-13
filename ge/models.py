@@ -7,7 +7,7 @@ from model_utils import Choices
 class Continente (models.Model):
     nom_continente = models.CharField(max_length=100,
             verbose_name='Nombre del Continente')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -53,7 +53,7 @@ class Pais(models.Model):
             help_text='Longitud del lugar de referencia del país (Capital)')
     geohash_ref = models.CharField(max_length=8,
             help_text='Geohash del lugar de referencia del país (Capital)')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -104,7 +104,7 @@ class Ut_sup(models.Model):
             help_text='Longitud del lugar de referencia')
     geohash_ref = models.CharField(max_length=7,
             help_text='Geohash del lugar de referencia')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -143,7 +143,7 @@ class Ut_intermedia(models.Model):
             help_text='Longitud del lugar de referencia')
     geohash_ref = models.CharField(max_length=7,
             help_text='Geohash del lugar de referencia')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -179,7 +179,7 @@ class Ut_basica(models.Model):
             help_text='Longitud del lugar de referencia')
     geohash_ref = models.CharField(max_length=7,
             help_text='Geohash del lugar de referencia')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -225,7 +225,7 @@ class Localidad(models.Model):
             help_text='Longitud de la localidad')
     geohash = models.CharField(max_length=7,
             help_text='Geohash de la ubicación de la Localidad')
-    geom = models.PointField()
+    geom = models.PointField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -242,7 +242,7 @@ class Localidad_fuente(models.Model):
     censo = models.IntegerField()
     poblacion = models.IntegerField()
     viviendas = models.IntegerField()
-    geom = models.PointField()
+    geom = models.PointField(null=True)
     objects = models.GeoManager()
 
     class Meta:
@@ -278,7 +278,7 @@ class Asiento(models.Model):
     latitud = models.FloatField()
     longitud = models.FloatField()
     geohash = models.CharField(max_length=8)
-    geom = models.PointField()
+    geom = models.PointField(null=True)
     objects = models.GeoManager()
     # GeoDjango-specific: a geometry field (MultiMultiPolygonField), and
     # overriding the default manager with a GeoManager instance.
@@ -304,7 +304,7 @@ class Ruta(models.Model):
     costo = models.FloatField()
     obs = models.CharField(max_length=100)
     fecha_act = models.DateTimeField()
-    geom = models.LineStringField()
+    geom = models.LineStringField(null=True)
     objects = models.GeoManager()
 
 
@@ -318,7 +318,7 @@ class Asiento_jurisdiccion(models.Model):
     longitud = models.FloatField()
     obs = models.CharField(max_length=100)
     fecha_act = models.DateTimeField()
-    geom = models.PointField()
+    geom = models.PointField(null=True)
     objects = models.GeoManager()
 
 
@@ -345,7 +345,7 @@ class Circun(models.Model):
     nom_circunscripcion = models.CharField(max_length=100)
     tipo_circun = models.ForeignKey('Tipo_circun')
     asientos = models.ManyToManyField('Asiento', through='asiento_circun')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
     def __unicode__(self):
@@ -370,7 +370,7 @@ class Distrito(models.Model):
     fecha_ingreso = models.DateTimeField()
     obs = models.CharField(max_length=150)
     fecha_act = models.DateTimeField()
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
 
@@ -396,7 +396,7 @@ class Zona(models.Model):
             help_text='Longitud del lugar de referencia')
     geohash_ref = models.CharField(max_length=7,
             help_text='Geohash del lugar de referencia')
-    geom = models.MultiPolygonField()
+    geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
 
@@ -428,7 +428,7 @@ class Recinto(models.Model):
     latitud = models.FloatField()
     longitud = models.FloatField()
     geohash = models.CharField(max_length=9)
-    geom = models.PointField()
+    geom = models.PointField(null=True)
     objects = models.GeoManager()
 
 
