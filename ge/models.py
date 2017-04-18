@@ -71,9 +71,13 @@ class Nivel_ut(models.Model):
     ut_descripcion = models.CharField(max_length=100,
             help_text='Descripción de la unidad territorial según país')
     pais = models.ForeignKey('Pais')
+    jerarquia = models.PositiveSmallIntegerField(null=True,
+            verbose_name = 'Jerarquía',
+            help_text='Jerarquía de la Unidad Territorial de acuerdo al País')
 
     class Meta:
         db_table = 'g_nivel_ut'
+        unique_together = ('id', 'jerarquia')
 
     def __unicode__(self):
         return self.ut_descripcion
@@ -339,6 +343,8 @@ class Asiento_img(models.Model):
 class Tipo_circun(models.Model):
     tipo_circun = models.CharField(max_length=40)
 
+    def __unicode__(self):
+        return self.tipo_circun
 
 class Circun(models.Model):
     circun = models.PositiveSmallIntegerField()
@@ -373,6 +379,9 @@ class Distrito(models.Model):
     geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
+    def __unicode__(self):
+        return self.distrito
+
 
 class Asiento_distrito(models.Model):
     asiento = models.ForeignKey(Asiento, on_delete=models.CASCADE)
@@ -398,6 +407,9 @@ class Zona(models.Model):
             help_text='Geohash del lugar de referencia')
     geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
+
+    def __unicode__(self):
+        return self.zona
 
 
 class Recinto(models.Model):
@@ -431,6 +443,8 @@ class Recinto(models.Model):
     geom = models.PointField(null=True)
     objects = models.GeoManager()
 
+    def __unicode__(self):
+        return self.nom_recinto
 
 class Recinto_img(models.Model):
     VISTAS = Choices(
