@@ -1,0 +1,16 @@
+{% extends "recinto_base.html" %}
+
+{% block content %}
+
+{% if recinto_list %}
+<ul>
+  {% for recinto in recinto_list %}
+  <li><a href="/recintos/{{ recinto.id }}/">{{ recinto.nom_recinto }}</a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No se encontraron Recintos Electorales...</p>
+{% endif %}
+
+
+{% endblock %}
