@@ -1,10 +1,9 @@
-{% extends "recinto_base.html" %}
 
 {% block content %}
 
-{% if recinto_list %}
+{% if recintos %}
 <ul>
-  {% for recinto in recinto_list %}
+  {% for recinto in recintos %}
   <li><a href="/recintos/{{ recinto.id }}/">{{ recinto.nom_recinto }}</a></li>
   {% endfor %}
 </ul>

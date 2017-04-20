@@ -27,12 +27,14 @@
 	      </button>
           <a class="navbar-brand" href="#">Geografía Electoral</a>
 
+            <!--
           <ul class="nav navbar-nav">
             <li>
                 <!-- <img src="../static/img/logo.png" alt="GeoE" style="width:190px;height:55px;">  -->
             </li>
             <li id="nav-recintos">
-                <a href="#">Consulta Recintos</a>
+                <!-- <a href="{% url 'search_page' %}">Consulta Recintos</a> -->
+                <a href="/search">Consulta Recintos</a>
             </li>
             <li id="nav-asientos">
                 <a href="#">Consulta Asientos</a>
@@ -42,6 +44,20 @@
             </li>
           </ul>
 	    </div>
+        http://getbootstrap.com/components/#navbar-default
+            -->
+
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+               <ul class="nav navbar-nav">
+                       <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                               <li><a href="/search">searchh</a></li>
+
+        </ul>
+        </div>
+
+
+
+
 
 
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -51,8 +67,8 @@
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Acciones<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
 	            <li><a href="/home">home</a></li>
-	            <li><a href="#">Another action</a></li>
-	            <li><a href="#">Something else here</a></li>
+	            <li><a href="/search">Another action</a></li>
+	            <li><a href="/categoria/new">Something else here</a></li>
 	            <li class="divider"></li>
 	            <li><a href="#">Separated link</a></li>
 	            <li class="divider"></li>
