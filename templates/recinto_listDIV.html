@@ -1,0 +1,37 @@
+{% block content %}
+
+{% if recintos %}
+<div class="container">
+    <div class="row titleStyle">
+        <h3>Resultado</h3>
+        <div class="col-md-1">id</div>
+        <div class="col-md-3">Nombre de Recinto</div>
+        <div class="col-md-2">Dirección-Zona</div>
+        <div class="col-md-2">Asiento</div>
+        <div class="col-md-2">Municipio</div>
+        <div class="col-md-2">Departamento</div>
+    </div>
+
+  {% for recinto in recintos %}
+  <!--
+  <li><a href="/recintos/{{ recinto.id }}/">{{ recinto.nom_recinto }} -- {{ recinto.direccion }} -- {{recinto.zona2}} -- {{recinto.distrito}}
+          --{{recinto.nom_asiento}}--{{recinto.nom_ut_basica}}
+      </a></li>
+    -->
+
+    <div class="row bgStyle1">
+        <div class="col-md-1">{{ recinto.id }}</div>
+        <div class="col-md-3">{{ recinto.nom_recinto }}</div>
+        <div class="col-md-2">{{ recinto.direccion }} - {{recinto.zona2 }}</div>
+        <div class="col-md-2">{{ recinto.nom_asiento }}</div>
+        <div class="col-md-2">{{ recinto.nom_ut_basica }}</div>
+        <div class="col-md-2">{{ recinto.nom_ut_sup }}</div>
+    </div>
+
+  {% endfor %}
+
+{% else %}
+<p>No se encontraron Recintos Electorales...</p>
+{% endif %}
+
+{% endblock %}

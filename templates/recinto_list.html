@@ -1,15 +1,66 @@
-
 {% block content %}
 
 {% if recintos %}
-<ul>
-  {% for recinto in recintos %}
-  <li><a href="/recintos/{{ recinto.id }}/">{{ recinto.nom_recinto }}</a></li>
-  {% endfor %}
-</ul>
+
+<!--
+    <div class="container">
+    <div class="row titleStyle">
+    <h3>Resultado</h3>
+    <div class="col-md-1">id</div>
+    <div class="col-md-3">Nombre de Recinto</div>
+    <div class="col-md-2">Dirección-Zona</div>
+    <div class="col-md-2">Asiento</div>
+    <div class="col-md-2">Municipio</div>
+    <div class="col-md-2">Departamento</div>
+    </div>
+
+    {% for recinto in recintos %}
+
+    <div class="row bgStyle1">
+    <div class="col-md-1">{{ recinto.id }}</div>
+    <div class="col-md-3">{{ recinto.nom_recinto }}</div>
+    <div class="col-md-2">{{ recinto.direccion }} - {{recinto.zona2 }}</div>
+    <div class="col-md-2">{{ recinto.nom_asiento }}</div>
+    <div class="col-md-2">{{ recinto.nom_ut_basica }}</div>
+    <div class="col-md-2">{{ recinto.nom_ut_sup }}</div>
+    </div>
+    </div>
+
+    {% endfor %}
+-->
+
+<table class = "table table-hover">
+    <caption>Resultado:</caption>
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre de Recinto</th>
+            <th>Dirección-Zona</th>
+            <th>Asiento</th>
+            <th>Municipio</th>
+            <th>Provincia/Departamento/País</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for recinto in recintos %}
+        <tr>
+            <td>{{ recinto.id }}</td>
+            <td><a href="/recintos/{{recinto.id}}">{{ recinto.nom_recinto }}</a></td>
+            <td>{{ recinto.direccion }} - {{ recinto.zona2}}</td>
+            <td>{{ recinto.nom_asiento }}</td>
+            <td>{{ recinto.nom_ut_basica }}</td>
+            <td>{{ recinto.nom_ut_intermedia }}/{{recinto.nom_ut_sup }}/{{recinto.nom_pais_alias}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+
 {% else %}
 <p>No se encontraron Recintos Electorales...</p>
 {% endif %}
-
 
 {% endblock %}

@@ -15,7 +15,7 @@ from ge.models import Recinto
 # view without authenticating
 @login_required(login_url="login/")
 def home(request):
-	return render(request,"home.html")
+    return render(request,"home.html")
 
 
 def categoria_new(request):
@@ -26,9 +26,9 @@ def categoria_new(request):
             categoria.nom_categoria = form.cleaned_data['nom_categoria']
             categoria.save()
             #return redirect('categoria_detail', pk=categoria.pk)
-    else:
-        form = CategoriaForm()
-    return render(request, 'categoria_edit.html', {'form': form})
+        else:
+            form = CategoriaForm()
+            return render(request, 'categoria_edit.html', {'form': form})
 
 
 def search_page(request):
@@ -40,13 +40,32 @@ def search_page(request):
         txt_search = request.GET['txt_search'].strip()
         if txt_search:
             form = SearchForm({'txt_search' : txt_search })
-            recintos = Recinto.objects.filter (nom_recinto__icontains=txt_search)[:10]
+            #recintos = Recinto.objects.filter(nom_recinto__icontains=txt_search)[:10]
+            txt_search= '%'+txt_search+'%'
+            recintos = Recinto.objects.raw('''
+                select a.id, a.nom_recinto, a.direccion, b.zona as zona2, c.distrito, e.nom_asiento,
+                        f.nom_ut_basica, g.nom_ut_intermedia, h.nom_ut_sup, i.nom_pais, j.nom_continente
+                from ge_recinto a
+                left join  ge_zona b on a.zona_id = b.id
+                left join  ge_distrito c on b.distrito_id = c.id
+                left join  ge_asiento_distrito  d on c.id  = d.distrito_id
+                left join  ge_asiento  e on e.id = d.asiento_id
+                left join g_ut_basica f on e.ut_basica_id = f.id
+                left join g_ut_intermedia g on f.ut_intermedia_id = g.id
+                left join g_ut_sup h on g.ut_sup_id = h.id
+                left join g_pais i on h.pais_id = i.id
+                left join g_continente j on i.continente_id = j.id
+                where a.nom_recinto ilike %s ''', [txt_search])
+
+            """
+            recintos = Recinto.objects.raw(''' select a.id, a.nom_recinto, a.direccion, b.zona as zona2
+                                           from ge_recinto a
+                                           left join ge_zona b on a.zona_id = b.id
+                                           where nom_recinto ilike  %s ''', [txt_search])
+            """
     variables = RequestContext(request, {
-        'form': form,
-        'recintos': recintos,
-        'show_results': show_results
+                'form': form,
+                'recintos': recintos,
+                'show_results': show_results
     })
     return render_to_response('search.html', variables)
-
-
-
