@@ -1,0 +1,39 @@
+{% block content %}
+
+{% if recintos %}
+
+<table class = "table table-hover">
+    <caption>Resultado:</caption>
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre de Recinto</th>
+            <th>Dirección-Zona</th>
+            <th>Asiento</th>
+            <th>Municipio</th>
+            <th>Provincia/Departamento/País</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for recinto in recintos %}
+        <tr>
+            <td>{{ recinto.id }}</td>
+            <td><a href="/recintos/{{recinto.id}}">{{ recinto.nom_recinto }}</a></td>
+            <td>{{ recinto.direccion }} - {{ recinto.zona2}}</td>
+            <td>{{ recinto.nom_asiento }}</td>
+            <td>{{ recinto.nom_ut_basica }}</td>
+            <td>{{ recinto.nom_ut_intermedia }}/{{recinto.nom_ut_sup }}/{{recinto.nom_pais_alias}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+
+{% else %}
+<p>No se encontraron Recintos Electorales...</p>
+{% endif %}
+
+{% endblock %}

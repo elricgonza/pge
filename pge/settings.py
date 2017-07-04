@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'smart_selects',
     'easyaudit',
     'ge.apps.GeConfig',
     'django.contrib.gis',
@@ -90,7 +91,7 @@ WSGI_APPLICATION = 'pge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'vsg',
+        'NAME': 'vsgsmart',
         'USER': 'uge',
         'PASSWORD': 'f',
         'HOST': '127.0.0.1',

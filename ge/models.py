@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib.gis.db import models
 from model_utils import Choices
+from smart_selects.db_fields import ChainedForeignKey
 
 
 class Continente (models.Model):
@@ -88,7 +89,15 @@ class Ut_sup(models.Model):
     nivel_ut = models.ForeignKey('Nivel_ut')
     nom_ut_sup = models.CharField(max_length=80,
             verbose_name = 'Nombre Ud.Terr. Superior')
-    pais = models.ForeignKey('Pais')
+    continente = models.ForeignKey(Continente)
+    #pais = models.ForeignKey('Pais')
+    pais = ChainedForeignKey(
+        'Pais',
+        chained_field="continente",
+        chained_model_field="continente",
+        show_all=False,
+        auto_choose=True
+    )
     cod_ine = models.CharField(max_length=2,
             help_text='Código del INE si corresponde a Bolivia',
             verbose_name = 'Código INE')
@@ -136,7 +145,23 @@ class Ut_intermedia(models.Model):
             help_text='Indica si la unidad territorial esta vigente')
     doc_legal = models.CharField(max_length=100,
             help_text='Indica si la unidad territorial esta vigente')
-    ut_sup = models.ForeignKey('Ut_sup')
+
+    continente = models.ForeignKey(Continente)
+    pais = ChainedForeignKey(
+        'Pais',
+        chained_field="continente",
+        chained_model_field="continente",
+        show_all=False,
+        auto_choose=True
+    )
+    #ut_sup = models.ForeignKey('Ut_sup')
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
     ut_intermedia_id = models.IntegerField(
             help_text='Será utilizado para definir más niveles a futuro de ser necesario - recursivo')
     fecha_ingreso = models.DateField(
@@ -161,6 +186,29 @@ class Ut_basica(models.Model):
     id_origen = models.IntegerField()
     version = models.PositiveSmallIntegerField()
     nivel_ut = models.ForeignKey('Nivel_ut')
+    continente = models.ForeignKey(Continente)
+    pais = ChainedForeignKey(
+        'Pais',
+        chained_field="continente",
+        chained_model_field="continente",
+        show_all=False,
+        auto_choose=True
+    )
+    #ut_sup = models.ForeignKey('Ut_sup')
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_intermedia = ChainedForeignKey(
+        'Ut_intermedia',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
     nom_ut_basica = models.CharField(max_length=80,
             verbose_name = 'Nombre Ud.Terr. Básica')
     cod_ine = models.CharField(max_length=6,
@@ -174,7 +222,7 @@ class Ut_basica(models.Model):
             help_text='Indica si la unidad territorial esta vigente')
     doc_legal = models.CharField(max_length=100,
             help_text='Indica si la unidad territorial esta vigente')
-    ut_intermedia = models.ForeignKey('Ut_intermedia')
+    #ut_intermedia = models.ForeignKey('Ut_intermedia')
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     lat_ref = models.FloatField(
@@ -195,11 +243,40 @@ class Ut_basica(models.Model):
 
 
 class Localidad(models.Model):
+    continente = models.ForeignKey(Continente)
+    pais = ChainedForeignKey(
+        'Pais',
+        chained_field="continente",
+        chained_model_field="continente",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_intermedia = ChainedForeignKey(
+        'Ut_intermedia',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_basica = ChainedForeignKey(
+        'Ut_basica',
+        chained_field="ut_intermedia",
+        chained_model_field="ut_intermedia",
+        show_all=False,
+        auto_choose=True
+    )
+    nom_localidad = models.CharField(max_length=80,
+            verbose_name = 'Nombre Ud.Terr. - equivalente a localidad en Bolivia')
     id_origen = models.IntegerField()
     version = models.PositiveSmallIntegerField()
     nivel_ut = models.ForeignKey('Nivel_ut')
-    nom_localidad = models.CharField(max_length=80,
-            verbose_name = 'Nombre Ud.Terr. - equivalente a localidad en Bolivia')
     cod_ine = models.CharField(max_length=6,
             help_text='Código del INE si corresponde a Bolivia',
             verbose_name = 'Código INE')
@@ -220,7 +297,7 @@ class Localidad(models.Model):
             help_text='Número de viviendas según el censo')
     doc_legal = models.CharField(max_length=100,
             help_text='Indica si la unidad territorial esta vigente')
-    ut_basica = models.ForeignKey('Ut_basica')
+    #ut_basica = models.ForeignKey('Ut_basica')
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     latitud = models.FloatField(
@@ -267,9 +344,45 @@ class Asiento(models.Model):
         (1, 'PROPUESTA', ('PROPUESTA')),
         (2, 'REVISION', ('REVISION')),
         (3, 'APROBADO', ('APROBADO')))
+    continente = models.ForeignKey(Continente)
+    pais = ChainedForeignKey(
+        'Pais',
+        chained_field="continente",
+        chained_model_field="continente",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_intermedia = ChainedForeignKey(
+        'Ut_intermedia',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_basica = ChainedForeignKey(
+        'Ut_basica',
+        chained_field="ut_intermedia",
+        chained_model_field="ut_intermedia",
+        show_all=False,
+        auto_choose=True
+    )
+    localidad = ChainedForeignKey(
+        'Localidad',
+        chained_field="ut_basica",
+        chained_model_field="ut_basica",
+        show_all=False,
+        auto_choose=True
+    )
     nom_asiento = models.CharField(max_length=100)
-    ut_basica = models.ForeignKey('Ut_basica')
-    localidad = models.ForeignKey('Localidad')
+    #ut_basica = models.ForeignKey('Ut_basica')
+    #localidad = models.ForeignKey('Localidad')
     resol_creacion = models.CharField(max_length=50)
     fecha_creacion = models.DateTimeField()
     descripcion_ubicacion = models.CharField(max_length=254)
@@ -278,11 +391,11 @@ class Asiento(models.Model):
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
     fecha_ingreso = models.DateTimeField()
     obs = models.CharField(max_length=100)
-    fecha_act = models.DateTimeField()
+    fecha_act = models.DateTimeField(auto_now_add=True)
     latitud = models.FloatField()
     longitud = models.FloatField()
     geohash = models.CharField(max_length=8)
-    geom = models.PointField(null=True)
+    geom = models.PointField(null=True, blank=True)
     objects = models.GeoManager()
     # GeoDjango-specific: a geometry field (MultiMultiPolygonField), and
     # overriding the default manager with a GeoManager instance.
@@ -295,8 +408,8 @@ class Asiento(models.Model):
 
 
 class Ruta(models.Model):
-    nro_ruta = models.IntegerField()
     asiento = models.ForeignKey('Asiento')
+    nro_ruta = models.IntegerField()
     nro_tramo = models.IntegerField()
     inicio = models.CharField(max_length=80)
     fin = models.CharField(max_length=80)
@@ -307,10 +420,12 @@ class Ruta(models.Model):
     tiempo_min = models.IntegerField()
     costo = models.FloatField()
     obs = models.CharField(max_length=100)
-    fecha_act = models.DateTimeField()
+    fecha_act = models.DateTimeField(auto_now_add=True)
     geom = models.LineStringField(null=True)
     objects = models.GeoManager()
 
+    def __unicode__(self):
+        return str(self.nro_ruta)
 
 class Asiento_jurisdiccion(models.Model):
     asiento = models.ForeignKey('Asiento')
@@ -356,8 +471,8 @@ class Circun(models.Model):
 
     def __unicode__(self):
         return self.nom_circunscripcion
-    class Admin:
-        pass
+    #class Admin:
+    #    pass
 
 
 class Asiento_circun(models.Model):
@@ -423,6 +538,42 @@ class Recinto(models.Model):
         (1, 'PROPUESTA', ('PROPUESTA')),
         (2, 'REVISION', ('REVISION')),
         (3, 'APROBADO', ('APROBADO')))
+    continente = models.ForeignKey(Continente)
+    pais = ChainedForeignKey(
+        'Pais',
+        chained_field="continente",
+        chained_model_field="continente",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_intermedia = ChainedForeignKey(
+        'Ut_intermedia',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_basica = ChainedForeignKey(
+        'Ut_basica',
+        chained_field="ut_intermedia",
+        chained_model_field="ut_intermedia",
+        show_all=False,
+        auto_choose=True
+    )
+    asiento = ChainedForeignKey(
+        'Asiento',
+        chained_field="ut_basica",
+        chained_model_field="ut_basica",
+        show_all=False,
+        auto_choose=True
+    )
     tipo = models.PositiveSmallIntegerField()
     zona = models.ForeignKey('Zona')
     nom_recinto = models.CharField(max_length=100)
@@ -463,9 +614,17 @@ class Recinto_img(models.Model):
 class Categoria(models.Model):
     nom_categoria = models.CharField(max_length=100)
 
+    def __unicode__(self):
+        return self.nom_categoria
+
 class Subcategoria(models.Model):
-    categoria = models.ForeignKey('Categoria')
+    categoria = models.ForeignKey(Categoria)
     nom_subcategoria = models.CharField(max_length=100)
+    obs = models.CharField(max_length=220)
+
+    def __unicode__(self):
+        return self.nom_subcategoria
+
 
 class Recinto_detalle(models.Model):
     recinto = models.ForeignKey('Recinto')
@@ -475,6 +634,14 @@ class Recinto_detalle(models.Model):
 
 class Asiento_detalle(models.Model):
     asiento = models.ForeignKey('Asiento')
-    subcategoria = models.ForeignKey('Subcategoria')
+    categoria = models.ForeignKey(Categoria)
+    subcategoria = ChainedForeignKey(
+        'Subcategoria',
+        chained_field="categoria",
+        chained_model_field="categoria",
+        show_all=False,
+        auto_choose=True
+    )
     descripcion = models.CharField(max_length=100)
-
+    def __unicode__(self):
+        return self.descripcion

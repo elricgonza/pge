@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'', include('ge.urls')),
     url(r'^login/$', views.login, {'template_name': 'login.html', 'authentication_form': LoginForm}, name='login'),
     url(r'^logout/$', views.logout, {'next_page': '/login'}),
+    url(r'^chaining/', include('smart_selects.urls')),
 ]

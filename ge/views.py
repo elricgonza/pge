@@ -18,6 +18,11 @@ def home(request):
     return render(request,"home.html")
 
 
+def recinto_detail(request, pk):
+    recinto = get_object_or_404(Recinto, pk=pk)
+    return render(request, 'recinto_detail.html', {'recinto': recinto})
+
+
 def categoria_new(request):
     if request.method == "POST":
         form = CategoriaForm(request.POST)
@@ -26,9 +31,9 @@ def categoria_new(request):
             categoria.nom_categoria = form.cleaned_data['nom_categoria']
             categoria.save()
             #return redirect('categoria_detail', pk=categoria.pk)
-        else:
-            form = CategoriaForm()
-            return render(request, 'categoria_edit.html', {'form': form})
+    else:
+        form = CategoriaForm()
+    return render(request, 'categoria_edit.html', {'form': form})
 
 
 def search_page(request):
