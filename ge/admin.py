@@ -58,6 +58,19 @@ class RutaAdmin(admin.ModelAdmin):
     exclude = ('geom',)
 
 
+class Asiento_jurisdiccionInline(admin.TabularInline):
+    model = Asiento_jurisdiccion
+    extra = 1
+
+    def get_extra (self, request, obj=None, **kwargs):
+        #Dynamically sets the number of extra forms. 0 if the related object
+        #already exists or the extra configuration otherwise.
+        if obj:
+            # Don't add any extra forms if the related object already exists.
+            return 0
+        return self.extra
+
+
 class RutaInline(admin.TabularInline):
     model = Ruta
     extra = 1
@@ -86,10 +99,11 @@ class Asiento_detalleInline(admin.TabularInline):
 
 @admin.register(Asiento)
 class AsientoAdmin(admin.ModelAdmin):
+    list_filter = ('ut_basica',)
     search_fields = ('nom_asiento', 'ut_basica')
-    list_display = ('id', 'nom_asiento', 'ut_basica')
+    list_display = ('id', 'nom_asiento', 'ubicacion')
     exclude = ('fecha_act', 'geom')
-    inlines = (Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_circunInline)
+    inlines = (Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
 
     '''
     fields = [('continente_id', 'pais_id', 'ut_sup_id'),('ut_intermedia_id', 'ut_basica_id', 'localidad_id'),
@@ -97,8 +111,16 @@ class AsientoAdmin(admin.ModelAdmin):
              ]
     '''
     fieldsets = (
-        ('Localización', {
-            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'localidad')
+        ('Datos Ubicación Geográfica', {
+            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'localidad',
+                           ('latitud', 'longitud', 'geohash')
+                      )
+        }),
+        ('Datos del Asiento Electoral', {'fields': ('nom_asiento', 'resol_creacion', 'fecha_creacion', 'estado',
+                          'proceso_activo', 'etapa', 'fecha_ingreso', 'obs', 'descripcion_ubicacion'
+                          )
+        }),
+        ('Datos si existe Oficialía de Registro Civil', {'fields':('existe_orc', 'numero_orc')
         }),
     )
 

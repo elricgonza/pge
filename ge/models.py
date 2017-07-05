@@ -380,19 +380,50 @@ class Asiento(models.Model):
         show_all=False,
         auto_choose=True
     )
-    nom_asiento = models.CharField(max_length=100)
+    nom_asiento = models.CharField(max_length=100,
+                                  verbose_name='Nombre Asiento Electoral',
+                                  help_text='Ingrese nombre del Asiento Electoral'
+                                  )
     #ut_basica = models.ForeignKey('Ut_basica')
     #localidad = models.ForeignKey('Localidad')
-    resol_creacion = models.CharField(max_length=50)
-    fecha_creacion = models.DateTimeField()
-    descripcion_ubicacion = models.CharField(max_length=254)
-    estado = models.PositiveSmallIntegerField(choices=ESTADOS, default=ESTADOS.ACTIVO)
-    proceso_activo = models.BooleanField()
-    etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
+    resol_creacion = models.CharField(max_length=50,
+                                     verbose_name='Resolución de sala plena',
+                                     help_text='Resolución de sala plena, (creacion/suspensión/supresión/..etc)'
+                                     )
+    fecha_creacion = models.DateTimeField(
+                                     verbose_name='Fecha resolución',
+                                     help_text='Fecha resolución de sala plena'
+                                     )
+    descripcion_ubicacion = models.TextField(blank=True,
+                                    verbose_name='Descripción ubicación',
+                                    help_text='Descripción de la ubicación del asiento electoral'
+                                            )
+    estado = models.PositiveSmallIntegerField(choices=ESTADOS, default=ESTADOS.ACTIVO,
+                                    verbose_name='Estado',
+                                    help_text='Estado del asiento electoral'
+                                             )
+    proceso_activo = models.BooleanField(
+                                    verbose_name='Activo en Proceso Electoral',
+                                    help_text='Marcar si se encuentra activo en Proceso Electoral'
+                                        )
+    etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA,
+                                    verbose_name='Etapa',
+                                    help_text='Describe la etapa en la que se encuentra la solicitud'
+                                            )
     fecha_ingreso = models.DateTimeField()
     obs = models.CharField(max_length=100)
     fecha_act = models.DateTimeField(auto_now_add=True)
-    latitud = models.FloatField()
+    existe_orc = models.NullBooleanField(blank=True,
+                                    verbose_name='Existe O.R.C.',
+                                    help_text='Marque si en la localidad existe Oficialía de Registro Civil'
+                                    )
+    numero_orc = models.BigIntegerField(blank=True, null=True,
+                                       verbose_name = 'Número de O.R.C.',
+                                       help_text = 'Número de O.R.C.'
+                                       )
+    latitud = models.FloatField(
+                                    help_text='Latitud/Longitud de la ubicación de la plaza principal u otra ubicación de interés en caso de que no cuente con plaza '
+                                )
     longitud = models.FloatField()
     geohash = models.CharField(max_length=8)
     geom = models.PointField(null=True, blank=True)
@@ -406,6 +437,8 @@ class Asiento(models.Model):
     def __unicode__(self):              # __unicode__ on Python 2
         return self.nom_asiento
 
+    def ubicacion(self):
+        return '%s - %s - %s - %s' % (self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
 
 class Ruta(models.Model):
     asiento = models.ForeignKey('Asiento')
@@ -435,7 +468,7 @@ class Asiento_jurisdiccion(models.Model):
     geohash = models.CharField(max_length=8)
     latitud = models.FloatField()
     longitud = models.FloatField()
-    obs = models.CharField(max_length=100)
+    obs = models.CharField(max_length=200)
     fecha_act = models.DateTimeField()
     geom = models.PointField(null=True)
     objects = models.GeoManager()
