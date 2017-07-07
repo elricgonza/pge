@@ -484,6 +484,9 @@ class Asiento_img(models.Model):
     vista = models.PositiveSmallIntegerField(choices=VISTAS)
     img = models.ImageField(upload_to="img", null=True, blank=True)
 
+    def image_tag(self):
+        return mark_safe('<img src="/img/%s" width="150" height="150" />' % (self.image))
+
     class Meta:
         unique_together = ('asiento', 'vista')
 

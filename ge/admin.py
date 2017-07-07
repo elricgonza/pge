@@ -103,6 +103,7 @@ class AsientoAdmin(admin.ModelAdmin):
     search_fields = ('nom_asiento', 'ut_basica')
     list_display = ('id', 'nom_asiento', 'ubicacion')
     exclude = ('fecha_act', 'geom')
+    readonly_fields = ('fecha_ingreso',)
     inlines = (Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
 
     '''
