@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
-from ge.models import Categoria
+from ge.models import Categoria, Asiento_img
+#from versatileimagefield.fields import * #SizedImageCenterpointClickDjangoAdminField, VersatileImageField
+from django.forms import ModelForm
 
+'''
+class YourModelForm(VersatileImageTestModelForm):
+    image = SizedImageCenterpointClickDjangoAdminField(required=False)
+
+    class Meta:
+        model = Asiento_img
+        fields = ('img',)
+'''
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Usuario:", max_length=30,
                                widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'username'}))

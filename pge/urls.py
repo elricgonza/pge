@@ -21,6 +21,8 @@ urlpatterns = [
 
 #!python
 # authtest/urls.py
+from django.conf.urls.static import static
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 # Add this import
@@ -35,4 +37,5 @@ urlpatterns = [
     url(r'^login/$', views.login, {'template_name': 'login.html', 'authentication_form': LoginForm}, name='login'),
     url(r'^logout/$', views.logout, {'next_page': '/login'}),
     url(r'^chaining/', include('smart_selects.urls')),
-]
+    url(r'^ajaximage/', include('ajaximage.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

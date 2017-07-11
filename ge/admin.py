@@ -138,6 +138,13 @@ class Asiento_distritoAdmin(admin.ModelAdmin):
     list_display = ('id', 'distrito', 'asiento')
 
 
+@admin.register(Asiento_img)
+class Asiento_imgAdmin(admin.ModelAdmin):
+    search_fields = ('asiento', )
+    list_display = ('id', 'asiento', 'vista', 'img')
+
+
+
 @admin.register(Zona)
 class ZonaAdmin(admin.ModelAdmin):
     search_fields = ('zona', 'distrito')

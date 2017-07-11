@@ -33,18 +33,18 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'smart_selects',
-    'easyaudit',
-    'ge.apps.GeConfig',
-    'django.contrib.gis',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
+INSTALLED_APPS = ['ajaximage',
+                  'versatileimagefield',
+                  'smart_selects',
+                  'easyaudit',
+                  'ge.apps.GeConfig',
+                  'django.contrib.gis',
+                  'django.contrib.admin',
+                  'django.contrib.auth',
+                  'django.contrib.contenttypes',
+                  'django.contrib.sessions',
+                  'django.contrib.messages',
+                  'django.contrib.staticfiles', ]
 
 MIDDLEWARE = [
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'pge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'vsgsmart',
+        'NAME': 'vvif',
         'USER': 'uge',
         'PASSWORD': 'f',
         'HOST': '127.0.0.1',
@@ -136,3 +136,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# https://github.com/bradleyg/django-ajaximage/tree/0d983a4ff6b370d1002a0daf00966ee9450d59ab
+AJAXIMAGE_AUTH_TEST = lambda u: True
+AJAXIMAGE_DIR = '/media/img/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

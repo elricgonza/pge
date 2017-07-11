@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from django.contrib.gis.db import models
 from model_utils import Choices
 from smart_selects.db_fields import ChainedForeignKey
-
+from versatileimagefield.fields import VersatileImageField
+from ajaximage.fields import AjaxImageField
 
 class Continente (models.Model):
     nom_continente = models.CharField(max_length=100,
@@ -312,6 +313,8 @@ class Localidad(models.Model):
     class Meta:
         db_table = 'g_localidad'
         unique_together = ('id_origen', 'version')
+        verbose_name = '-Localidad-'
+        verbose_name_plural = 'Localidades'
 
     def __unicode__(self):
         return self.nom_localidad
@@ -482,10 +485,12 @@ class Asiento_img(models.Model):
         (4, 'VISTA3', ('VISTA3')))
     asiento = models.ForeignKey('Asiento')
     vista = models.PositiveSmallIntegerField(choices=VISTAS)
-    img = models.ImageField(upload_to="img", null=True, blank=True)
+    #img = models.ImageField(upload_to="img", null=True, blank=True)
+    #img = VersatileImageField('Image', upload_to="img", null=True, blank=True)
+    img = AjaxImageField(upload_to='img', max_height=768, max_width=1024, crop=True)
 
-    def image_tag(self):
-        return mark_safe('<img src="/img/%s" width="150" height="150" />' % (self.image))
+    #def image_tag(self):
+     #   return mark_safe('<img src="/img/%s" width="150" height="150" />' % (self.image))
 
     class Meta:
         unique_together = ('asiento', 'vista')
