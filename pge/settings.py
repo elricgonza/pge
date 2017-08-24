@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es' #'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -142,4 +142,4 @@ AJAXIMAGE_AUTH_TEST = lambda u: True
 AJAXIMAGE_DIR = '/media/img/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#not check with css  STATIC_ROOT = os.path.join(BASE_DIR, 'static')

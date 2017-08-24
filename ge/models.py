@@ -5,6 +5,37 @@ from model_utils import Choices
 from smart_selects.db_fields import ChainedForeignKey
 from versatileimagefield.fields import VersatileImageField
 from ajaximage.fields import AjaxImageField
+from django.utils import timezone
+from uuid import uuid4
+import os
+from  django.db import connection
+#from datetime import datetime
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
+
+def validate_long(value):
+    if (value > -57 or value < -69):
+        raise ValidationError(
+            _(' Longitud incorrecta...'),
+            params={'value': value},
+        )
+
+
+def validate_lat(value):
+    if (value > -9 or value < -22):
+        raise ValidationError(
+            _('Latitud incorrecta...'),
+            params={'value': value},
+        )
+
+
+def validate_even(value):
+    if value % 2 != 0:
+        raise ValidationError(
+            _('%(value)s is not an even number'),
+            params={'value': value},
+        )
+
 
 class Continente (models.Model):
     nom_continente = models.CharField(max_length=100,
@@ -413,9 +444,12 @@ class Asiento(models.Model):
                                     verbose_name='Etapa',
                                     help_text='Describe la etapa en la que se encuentra la solicitud'
                                             )
-    fecha_ingreso = models.DateTimeField()
+    #fecha_ingreso = models.DateTimeField(auto_now=True)
+    fecha_ingreso = models.DateTimeField(default=timezone.now)
     obs = models.CharField(max_length=100)
-    fecha_act = models.DateTimeField(auto_now_add=True)
+    #fecha_act = models.DateTimeField(auto_now_add=True)
+    #fecha_act = models.AutoDateTimeField(default=timezone.now)
+    fecha_act = models.DateTimeField(auto_now=True)
     existe_orc = models.NullBooleanField(blank=True,
                                     verbose_name='Existe O.R.C.',
                                     help_text='Marque si en la localidad existe Oficialía de Registro Civil'
@@ -424,10 +458,10 @@ class Asiento(models.Model):
                                        verbose_name = 'Número de O.R.C.',
                                        help_text = 'Número de O.R.C.'
                                        )
-    latitud = models.FloatField(
+    latitud = models.FloatField(validators=[validate_lat],
                                     help_text='Latitud/Longitud de la ubicación de la plaza principal u otra ubicación de interés en caso de que no cuente con plaza '
                                 )
-    longitud = models.FloatField()
+    longitud = models.FloatField(validators=[validate_long])
     geohash = models.CharField(max_length=8)
     geom = models.PointField(null=True, blank=True)
     objects = models.GeoManager()
@@ -442,6 +476,12 @@ class Asiento(models.Model):
 
     def ubicacion(self):
         return '%s - %s - %s - %s' % (self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
+
+'''
+    def save(self, *args, **kwargs):
+        self.fecha_act = datetime.now() #.replace(tzinfo=get_current_timezone())
+        super(Asiento, self).save(*args, **kwargs)
+'''
 
 class Ruta(models.Model):
     asiento = models.ForeignKey('Asiento')
@@ -477,6 +517,76 @@ class Asiento_jurisdiccion(models.Model):
     objects = models.GeoManager()
 
 
+def path_and_rename(instance, filename):
+    upload_to = 'img'
+    ext = filename.split('.')[-1]
+    # get filename
+    if instance.pk:
+        filename = '{}.{}'.format(instance.pk, ext)
+    else:
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(upload_to, filename)
+
+'''
+class path_and_renamec(instance):
+    def __call__(self):
+        upload_to = 'img'
+        ext = filename.split('.')[-1]
+        # get filename
+        if instance.pk:
+            filename = '{}.{}'.format(instance.pk, ext)
+        else:
+            # set filename as random string
+            filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(upload_to, filename)
+'''
+
+# https://djangosnippets.org/snippets/2731/
+def prefetch_id(instance):
+    """ Fetch the next value in a django id autofield postgresql sequence """
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT nextval('{0}_{1}_id_seq'::regclass)".format(
+            instance._meta.app_label.lower(),
+            instance._meta.object_name.lower(),
+        )
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return int(row[0])
+
+# https://stackoverflow.com/questions/5135556/dynamic-file-path-in-django
+def get_asiento_img_path(instance, filename):
+    id = instance.id
+    if id == None:
+        id = max(map(lambda a:a.id, Asiento_img.objects.all())) + 1
+    return os.path.join('img', str(id), filename)
+
+def get_asiento_img_path2(instance, filename):
+    id = instance.id
+    if id == None:
+        #id = max(map(lambda a:a.id, Asiento_img.objects.all())) + 1
+        id = prefetch_id(instance) + 1
+    return os.path.join('img', str(id), filename)
+
+
+def get_asiento_img_path3(instance, filename):
+    upload_to = 'img'
+    ext = filename.split('.')[-1]
+    id = instance.id
+    if id == None:
+        id = prefetch_id(instance) + 1
+        filename = '{}_{}.{}'.format(id, instance.vista, ext)
+    else:
+        #filename = '{}.{}'.format(instance.pk, ext)
+        filename = '{}_{}.{}'.format(instance.pk, instance.vista, ext)
+    #return os.path.join('img', str(id), filename)
+    return os.path.join(upload_to, filename)
+
+
 class Asiento_img(models.Model):
     VISTAS = Choices(
         (1, 'PANORAMICA', ('PANORAMICA')),
@@ -486,11 +596,22 @@ class Asiento_img(models.Model):
     asiento = models.ForeignKey('Asiento')
     vista = models.PositiveSmallIntegerField(choices=VISTAS)
     #img = models.ImageField(upload_to="img", null=True, blank=True)
-    #img = VersatileImageField('Image', upload_to="img", null=True, blank=True)
-    img = AjaxImageField(upload_to='img', max_height=768, max_width=1024, crop=True)
+    #ok img = VersatileImageField('Image', upload_to="img", null=True, blank=True)
+    #ok img = VersatileImageField('Image', upload_to=path_and_rename, null=True, blank=True)
+    #ok img = AjaxImageField(upload_to='img', max_height=768, max_width=1024, crop=True)
+    img = VersatileImageField(upload_to=get_asiento_img_path3)
 
     #def image_tag(self):
      #   return mark_safe('<img src="/img/%s" width="150" height="150" />' % (self.image))
+
+    '''
+    def save(self, *args, **kwargs):
+        if not self.id: #and img:
+            #self.id = prefetch_id(instance)
+            self.id = prefetch_id
+
+        super(Asiento_img, self).save(*args, **kwargs)
+    '''
 
     class Meta:
         unique_together = ('asiento', 'vista')

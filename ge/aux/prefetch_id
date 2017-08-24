@@ -1,0 +1,12 @@
+def prefetch_id(instance):
+    """ Fetch the next value in a django id autofield postgresql sequence """
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT nextval('{0}_{1}_id_seq'::regclass)".format(
+            instance._meta.app_label.lower(),
+            instance._meta.object_name.lower(),
+        )
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return int(row[0])
