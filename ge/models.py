@@ -309,7 +309,7 @@ class Localidad(models.Model):
     id_origen = models.IntegerField()
     version = models.PositiveSmallIntegerField()
     nivel_ut = models.ForeignKey('Nivel_ut')
-    cod_ine = models.CharField(max_length=6,
+    cod_ine = models.CharField(max_length=15,
             help_text='Código del INE si corresponde a Bolivia',
             verbose_name = 'Código INE')
     cod_ine_shp = models.CharField(max_length=15,
@@ -420,11 +420,11 @@ class Asiento(models.Model):
                                   )
     #ut_basica = models.ForeignKey('Ut_basica')
     #localidad = models.ForeignKey('Localidad')
-    resol_creacion = models.CharField(max_length=50,
-                                     verbose_name='Resolución de sala plena',
-                                     help_text='Resolución de sala plena, (creacion/suspensión/supresión/..etc)'
+    doc_actualizacion = models.CharField(max_length=50,
+                                     verbose_name='Doc. de Actualización RSP',
+                                     help_text='Resolución de sala plena, (creacion/suspensión/supresión/..etc), Inf. u otro'
                                      )
-    fecha_creacion = models.DateTimeField(
+    fecha_doc_actualizacion = models.DateField(
                                      verbose_name='Fecha resolución',
                                      help_text='Fecha resolución de sala plena'
                                      )
@@ -649,6 +649,7 @@ class Distrito(models.Model):
         (3, 'APROBADO', ('APROBADO')))
     asientos = models.ManyToManyField('Asiento', through='asiento_distrito')
     distrito = models.CharField(max_length=100)
+    nro_distrito = models.CharField(max_length=10)
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
     fecha_ingreso = models.DateTimeField()
     obs = models.CharField(max_length=150)
@@ -740,7 +741,8 @@ class Recinto(models.Model):
     zona = models.ForeignKey('Zona')
     nom_recinto = models.CharField(max_length=100)
     max_mesas = models.PositiveSmallIntegerField()
-    cantidad_pisos = models.PositiveIntegerField()
+    nro_pisos = models.PositiveIntegerField()
+    nro_aulas = models.PositiveSmallIntegerField()
     direccion = models.CharField(max_length=150)
     estado = models.PositiveSmallIntegerField(
         choices=ESTADOS, default=ESTADOS.ACTIVO)
