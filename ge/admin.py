@@ -117,7 +117,7 @@ class AsientoAdmin(admin.ModelAdmin):
                            ('latitud', 'longitud', 'geohash')
                       )
         }),
-        ('Datos del Asiento Electoral', {'fields': ('nom_asiento', 'resol_creacion', 'fecha_creacion', 'estado',
+        ('Datos del Asiento Electoral', {'fields': ('nom_asiento', 'doc_actualizacion', 'fecha_doc_actualizacion', 'estado',
                           'proceso_activo', 'etapa', 'fecha_ingreso', 'obs', 'descripcion_ubicacion'
                           )
         }),
