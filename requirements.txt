@@ -1,0 +1,9 @@
+Django==1.10.5
+django-ajaximage==0.2.8
+django-easy-audit==0.8
+django-model-utils==2.6.1
+django-smart-selects==1.5.2
+django-versatileimagefield==1.7.1
+olefile==0.44
+Pillow==4.0.0
+psycopg2==2.6.2
