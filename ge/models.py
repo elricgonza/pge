@@ -740,6 +740,13 @@ class Recinto(models.Model):
     tipo = models.PositiveSmallIntegerField()
     zona = models.ForeignKey('Zona')
     nom_recinto = models.CharField(max_length=100)
+    doc_actualizacion = models.CharField(max_length=50,
+                                        verbose_name='Doc. de Actualización',
+                                        help_text='Resolución de sala plena, (creación/suspensión/supresión/...etc)')
+    fecha_doc_actualizacion = models.DateField(
+                                        verbose_name='Fecha Doc. de Actualización',
+                                        help_text='Fecha Doc. de Actualización (RSP, Inf, etc.)'
+    )
     max_mesas = models.PositiveSmallIntegerField()
     nro_pisos = models.PositiveIntegerField()
     nro_aulas = models.PositiveSmallIntegerField()
