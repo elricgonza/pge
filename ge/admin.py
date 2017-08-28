@@ -57,7 +57,7 @@ class Nivel_utAdmin(admin.ModelAdmin):
 class RutaAdmin(admin.ModelAdmin):
     exclude = ('geom',)
 
-
+# to asiento
 class Asiento_jurisdiccionInline(admin.TabularInline):
     model = Asiento_jurisdiccion
     extra = 1
@@ -150,12 +150,27 @@ class ZonaAdmin(admin.ModelAdmin):
     search_fields = ('zona', 'distrito')
     list_display = ('id', 'zona', 'distrito')
 
-
+# recinto
 @admin.register(Recinto)
 class RecintoAdmin(admin.ModelAdmin):
-    search_fields = ('nom_recinto', 'zona')
-    list_display = ('id', 'nom_recinto', 'zona')
+    list_filter = ('ut_basica',)
+    search_fields = ('nom_recinto', 'ut_basica')
+    list_display = ('id', 'nom_recinto', 'ubicacion')
+    exclude = ('fecha_act', 'geom')
+    readonly_fields = ('fecha_ingreso', 'fecha_act')
+    #inlines = (Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
 
+    fieldsets = (
+        ('Datos Ubicación Geográfica', {
+            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'asiento',
+                           ('latitud', 'longitud', 'geohash')
+                      )
+        }),
+        ('Datos del Recinto Electoral', {'fields': ('nom_recinto', 'direccion', 'doc_actualizacion', 'fecha_doc_actualizacion', 'estado',
+                          'etapa', 'fecha_ingreso', 'obs'
+                          )
+        }),
+    )
 
 @admin.register(Circun)
 class CircunAdmin(admin.ModelAdmin):

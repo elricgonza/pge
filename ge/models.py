@@ -768,6 +768,10 @@ class Recinto(models.Model):
     def __unicode__(self):
         return self.nom_recinto
 
+    def ubicacion(self):
+        return '%s - %s - %s - %s - %s' % (self.direccion, self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
+
+
 class Recinto_img(models.Model):
     VISTAS = Choices(
         (1, 'FRONTAL', ('FRONTAL')),
