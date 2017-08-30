@@ -1,7 +1,7 @@
 *.pyc
 *~
 __pycache__
-ge/migrations
+ge/migrations/*.py
 /img
 /media
 /static

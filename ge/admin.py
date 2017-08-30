@@ -166,8 +166,8 @@ class RecintoAdmin(admin.ModelAdmin):
                            ('latitud', 'longitud', 'geohash')
                       )
         }),
-        ('Datos del Recinto Electoral', {'fields': ('nom_recinto', 'direccion', 'doc_actualizacion', 'fecha_doc_actualizacion', 'estado',
-                          'etapa', 'fecha_ingreso', 'obs'
+        ('Datos del Recinto Electoral', {'fields': ('nom_recinto', 'direccion', 'zona', 'estado', 'tipo', 'tipo_circun', 'doc_actualizacion', 'fecha_doc_actualizacion',
+                          'max_mesas', 'nro_pisos', 'nro_aulas', 'rue', 'etapa', 'fecha_ingreso', 'obs'
                           )
         }),
     )

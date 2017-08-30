@@ -701,6 +701,18 @@ class Recinto(models.Model):
         (1, 'PROPUESTA', ('PROPUESTA')),
         (2, 'REVISION', ('REVISION')),
         (3, 'APROBADO', ('APROBADO')))
+    TIPOS = Choices(
+        (1, 'UNIDAD_EDUCATIVA', ('Unidad Educativa')),
+        (2, 'SEDE', ('Sede/Casa comunal/Casa de gobierno/Salón de comunidad')),
+        (3, 'IGLESIA', ('Iglesia/Seminario')),
+        (4, 'CÁRCEL', ('Cárcel')),
+        (5, 'UNIVERSIDAD', ('Universidad/Normal')),
+        (6, 'PLAZA', ('Plaza')),
+        (7, 'CENTRO_SALUD', ('Centro de Salud')),
+        (8, 'COMPLEJO', ('Complejo/Campo deportivo')),
+        (100, 'OTROS', ('Otros')),
+
+    )
     continente = models.ForeignKey(Continente)
     pais = ChainedForeignKey(
         'Pais',
@@ -737,7 +749,8 @@ class Recinto(models.Model):
         show_all=False,
         auto_choose=True
     )
-    tipo = models.PositiveSmallIntegerField()
+    tipo = models.PositiveSmallIntegerField(
+        choices=TIPOS, default=TIPOS.UNIDAD_EDUCATIVA)
     zona = models.ForeignKey('Zona')
     nom_recinto = models.CharField(max_length=100)
     doc_actualizacion = models.CharField(max_length=50,
@@ -756,8 +769,8 @@ class Recinto(models.Model):
     tipo_circun = models.ForeignKey('Tipo_circun')
     rue = models.PositiveIntegerField()
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
-    fecha_ingreso = models.DateTimeField()
-    fecha_act = models.DateTimeField()
+    fecha_ingreso = models.DateTimeField(default=timezone.now)
+    fecha_act = models.DateTimeField(auto_now_add=True)
     obs = models.CharField(max_length=120)
     latitud = models.FloatField()
     longitud = models.FloatField()
