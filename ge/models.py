@@ -752,7 +752,10 @@ class Recinto(models.Model):
     tipo = models.PositiveSmallIntegerField(
         choices=TIPOS, default=TIPOS.UNIDAD_EDUCATIVA)
     zona = models.ForeignKey('Zona')
-    nom_recinto = models.CharField(max_length=100)
+    nom_recinto = models.CharField(max_length=100,
+                                  verbose_name= 'Nombre de Recinto',
+                                  help_text= 'Nombre del Recinto Electoral'
+                                  )
     doc_actualizacion = models.CharField(max_length=50,
                                         verbose_name='Doc. de Actualización',
                                         help_text='Resolución de sala plena, (creación/suspensión/supresión/...etc)')
