@@ -150,7 +150,13 @@ class ZonaAdmin(admin.ModelAdmin):
     search_fields = ('zona', 'distrito')
     list_display = ('id', 'zona', 'distrito')
 
+
 # recinto
+
+class Recinto_detalleInline(admin.TabularInline):
+    model = Recinto_detalle
+
+
 @admin.register(Recinto)
 class RecintoAdmin(admin.ModelAdmin):
     list_filter = ('ut_basica',)
@@ -158,7 +164,7 @@ class RecintoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_recinto', 'ubicacion')
     exclude = ('fecha_act', 'geom')
     readonly_fields = ('fecha_ingreso', 'fecha_act')
-    #inlines = (Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
+    inlines = (Recinto_detalleInline, ) #, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
