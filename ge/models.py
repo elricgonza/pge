@@ -819,8 +819,17 @@ class Subcategoria(models.Model):
 
 class Recinto_detalle(models.Model):
     recinto = models.ForeignKey('Recinto')
-    subcategoria = models.ForeignKey('Subcategoria')
+    categoria = models.ForeignKey(Categoria)
+    subcategoria = ChainedForeignKey(
+        'Subcategoria',
+        chained_field="categoria",
+        chained_model_field="categoria",
+        show_all=False,
+        auto_choose=True
+    )
     descripcion = models.CharField(max_length=100)
+    def __unicode__(self):
+        return self.descripcion
 
 
 class Asiento_detalle(models.Model):
