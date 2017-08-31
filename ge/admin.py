@@ -153,6 +153,10 @@ class ZonaAdmin(admin.ModelAdmin):
 
 # recinto
 
+class Recinto_imgInline(admin.TabularInline):
+    model = Recinto_img
+
+
 class Recinto_detalleInline(admin.TabularInline):
     model = Recinto_detalle
 
@@ -164,7 +168,7 @@ class RecintoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_recinto', 'ubicacion')
     exclude = ('fecha_act', 'geom')
     readonly_fields = ('fecha_ingreso', 'fecha_act')
-    inlines = (Recinto_detalleInline, ) #, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
+    inlines = (Recinto_detalleInline, Recinto_imgInline) #, RutaInline, Asiento_jurisdiccionInline)
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
