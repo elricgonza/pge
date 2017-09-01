@@ -462,7 +462,7 @@ class Asiento(models.Model):
                                     help_text='Latitud/Longitud de la ubicación de la plaza principal u otra ubicación de interés en caso de que no cuente con plaza '
                                 )
     longitud = models.FloatField(validators=[validate_long])
-    geohash = models.CharField(max_length=8)
+    geohash = models.CharField(max_length=8, null=True, blank= True)
     geom = models.PointField(null=True, blank=True)
     objects = models.GeoManager()
     # GeoDjango-specific: a geometry field (MultiMultiPolygonField), and
@@ -692,11 +692,12 @@ class Zona(models.Model):
 
 class Recinto(models.Model):
     ESTADOS = Choices(
-        (1, 'ACTIVO', ('ACTIVO')),
+        (1, 'HABILITADO', ('HABILITADO')),
         (2, 'REHABILITADO', ('REHABILITADO')),
-        (3, 'TRASLADADO', ('TRASLADADO')),
+        (3, 'RESTRINGIDO', ('RESTRINGIDO')),
         (4, 'SUSPENDIDO', ('SUSPENDIDO')),
-        (5, 'SUPRIMIDO', ('SUPRIMIDO')))
+        (5, 'SUPRIMIDO', ('SUPRIMIDO')),
+        (6, 'SATURADO', ('SATURADO')))
     ETAPAS = Choices(
         (1, 'PROPUESTA', ('PROPUESTA')),
         (2, 'REVISION', ('REVISION')),
@@ -763,21 +764,41 @@ class Recinto(models.Model):
                                         verbose_name='Fecha Doc. de Actualización',
                                         help_text='Fecha Doc. de Actualización (RSP, Inf, etc.)'
     )
-    max_mesas = models.PositiveSmallIntegerField()
-    nro_pisos = models.PositiveIntegerField()
-    nro_aulas = models.PositiveSmallIntegerField()
-    direccion = models.CharField(max_length=150)
+    max_mesas = models.PositiveSmallIntegerField(
+                                        verbose_name='Nro. Máx. mesas',
+                                        help_text='Nro. máximo de mesas'
+    )
+    nro_pisos = models.PositiveIntegerField(
+                                        verbose_name='Nro. Pisos',
+                                        help_text='Número de pisos del recinto'
+    )
+    nro_aulas = models.PositiveSmallIntegerField(
+                                        verbose_name='Nro. Aulas',
+                                        help_text='Número de aulas del recinto'
+    )
+    direccion = models.CharField(max_length=150,
+                                        verbose_name='Dirección',
+                                        help_text='Dirección - Calle, #, Zona...'
+    )
     estado = models.PositiveSmallIntegerField(
-        choices=ESTADOS, default=ESTADOS.ACTIVO)
+        choices=ESTADOS, default=ESTADOS.HABILITADO)
     tipo_circun = models.ForeignKey('Tipo_circun')
-    rue = models.PositiveIntegerField()
+    rue = models.PositiveIntegerField(
+                                        verbose_name='Código RUE',
+                                        help_text='Código RUE de la Unidad Educativa'
+    )
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
-    fecha_ingreso = models.DateTimeField(default=timezone.now)
+    fecha_ingreso = models.DateTimeField(default=timezone.now,
+                                        verbose_name='Fecha Ingreso',
+                                        help_text='Fecha de ingreso al sistema'
+    )
     fecha_act = models.DateTimeField(auto_now_add=True)
     obs = models.CharField(max_length=120)
-    latitud = models.FloatField()
-    longitud = models.FloatField()
-    geohash = models.CharField(max_length=9)
+    latitud = models.FloatField(validators=[validate_lat],
+                                    help_text='Latitud/Longitud del recinto'
+                                )
+    longitud = models.FloatField(validators=[validate_long])
+    geohash = models.CharField(max_length=9, null=True, blank= True)
     geom = models.PointField(null=True)
     objects = models.GeoManager()
 
@@ -788,15 +809,29 @@ class Recinto(models.Model):
         return '%s - %s - %s - %s - %s' % (self.direccion, self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
 
 
+def get_recinto_img_path(instance, filename):
+    upload_to = 'imgreci'
+    ext = filename.split('.')[-1]
+    id = instance.id
+    if id == None:
+        id = prefetch_id(instance) + 1
+        filename = '{}_{}.{}'.format(id, instance.vista, ext)
+    else:
+        #filename = '{}.{}'.format(instance.pk, ext)
+        filename = '{}_{}.{}'.format(instance.pk, instance.vista, ext)
+    #return os.path.join('img', str(id), filename)
+    return os.path.join(upload_to, filename)
+
+
 class Recinto_img(models.Model):
     VISTAS = Choices(
-        (1, 'FRONTAL', ('FRONTAL')),
-        (2, 'INTERIOR', ('INTERIOR')),
-        (3, 'LATERAL_IZQ', ('LATERAL_IZQ')),
-        (4, 'LATERAL_DER', ('LATERAL_DER')))
+        (1, 'PANORAMICA', ('PANORAMICA')),
+        (2, 'FRONTAL', ('FRONTAL')),
+        (3, 'INTERIOR', ('INTERIOR')),
+        (4, 'OTRO', ('OTRO')))
     recinto = models.ForeignKey('Recinto')
     vista = models.PositiveSmallIntegerField(choices=VISTAS)
-    img = models.ImageField(upload_to="img", null=True, blank=True)
+    img = VersatileImageField(upload_to=get_recinto_img_path)
 
     class Meta:
         unique_together = ('recinto', 'vista')
