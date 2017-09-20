@@ -575,6 +575,7 @@ def get_asiento_img_path2(instance, filename):
 
 def get_asiento_img_path3(instance, filename):
     upload_to = 'img'
+    #upload_to = carpeta
     ext = filename.split('.')[-1]
     id = instance.id
     if id == None:

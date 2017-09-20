@@ -1,2 +1,3 @@
 
-create: /media/img
+create: /media/img      (se guardará img de asientos)
+        /media/imgreci  (se guardará img de recintos)

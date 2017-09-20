@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'pge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'vvif',
+        'NAME': 'vjoelnicog',
         'USER': 'uge',
         'PASSWORD': 'f',
         'HOST': '127.0.0.1',
