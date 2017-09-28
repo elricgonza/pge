@@ -28,7 +28,7 @@ STATICFILES_DIRS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.100.15.47', 'localhost']
 
 
 # Application definition
@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'pge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'vjoelnicog',
+        'NAME': 'geodb',
         'USER': 'uge',
         'PASSWORD': 'f',
         'HOST': '127.0.0.1',
