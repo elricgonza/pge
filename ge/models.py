@@ -558,6 +558,20 @@ def prefetch_id(instance):
     cursor.close()
     return int(row[0])
 
+
+def prefetch_id2(instance):
+    """ Fetch the next value in a django id autofield postgresql sequence """
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT last_value + increment_by from  {0}_{1}_id_seq".format(
+            instance._meta.app_label.lower(),
+            instance._meta.object_name.lower(),
+        )
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return int(row[0])
+
 # https://stackoverflow.com/questions/5135556/dynamic-file-path-in-django
 def get_asiento_img_path(instance, filename):
     id = instance.id
@@ -579,7 +593,7 @@ def get_asiento_img_path3(instance, filename):
     ext = filename.split('.')[-1]
     id = instance.id
     if id == None:
-        id = prefetch_id(instance) + 1
+        id = prefetch_id2(instance) # + 1
         filename = '{}_{}.{}'.format(id, instance.vista, ext)
     else:
         #filename = '{}.{}'.format(instance.pk, ext)
@@ -815,7 +829,7 @@ def get_recinto_img_path(instance, filename):
     ext = filename.split('.')[-1]
     id = instance.id
     if id == None:
-        id = prefetch_id(instance) + 1
+        id = prefetch_id2(instance) #+ 1
         filename = '{}_{}.{}'.format(id, instance.vista, ext)
     else:
         #filename = '{}.{}'.format(instance.pk, ext)
