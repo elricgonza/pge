@@ -141,5 +141,6 @@ STATIC_URL = '/static/'
 AJAXIMAGE_AUTH_TEST = lambda u: True
 AJAXIMAGE_DIR = '/media/img/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = os.path.join(BASE_DIR, '/media/')
+#MEDIA_URL = '/media/'
 #not check with css  STATIC_ROOT = os.path.join(BASE_DIR, 'static')

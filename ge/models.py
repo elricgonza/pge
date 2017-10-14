@@ -412,7 +412,9 @@ class Asiento(models.Model):
         chained_field="ut_basica",
         chained_model_field="ut_basica",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        blank = True,
+        null = True
     )
     nom_asiento = models.CharField(max_length=100,
                                   verbose_name='Nombre Asiento Electoral',
@@ -670,6 +672,21 @@ class Distrito(models.Model):
     obs = models.CharField(max_length=150)
     fecha_act = models.DateTimeField()
     geom = models.MultiPolygonField(null=True)
+    pais = models.ForeignKey(Pais)
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_basica = ChainedForeignKey(
+        'Ut_basica',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
     objects = models.GeoManager()
 
     def __unicode__(self):
