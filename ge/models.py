@@ -668,9 +668,9 @@ class Distrito(models.Model):
     distrito = models.CharField(max_length=100)
     nro_distrito = models.CharField(max_length=10)
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
-    fecha_ingreso = models.DateTimeField()
+    fecha_ingreso = models.DateTimeField(default=timezone.now)
     obs = models.CharField(max_length=150)
-    fecha_act = models.DateTimeField()
+    fecha_act = models.DateTimeField(auto_now=True)
     geom = models.MultiPolygonField(null=True)
     pais = models.ForeignKey(Pais)
     ut_sup = ChainedForeignKey(
@@ -692,6 +692,8 @@ class Distrito(models.Model):
     def __unicode__(self):
         return self.distrito
 
+    def ubicacion(self):
+        return '%s - %s - %s - %s' % (self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
 
 class Asiento_distrito(models.Model):
     asiento = models.ForeignKey(Asiento, on_delete=models.CASCADE)
@@ -704,11 +706,11 @@ class Zona(models.Model):
         (2, 'REVISION', ('REVISION')),
         (3, 'APROBADO', ('APROBADO')))
     zona = models.CharField(max_length=100)
-    distrito = models.ForeignKey('Distrito')
+    #distrito = models.ForeignKey('Distrito')
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
-    fecha_ingreso = models.DateTimeField()
+    fecha_ingreso = models.DateTimeField(default=timezone.now)
     obs = models.CharField(max_length=120)
-    fecha_act = models.DateTimeField()
+    fecha_act = models.DateTimeField(auto_now=True)
     lat_ref = models.FloatField(
             help_text='Latitud del lugar de referencia')
     long_ref = models.FloatField(
@@ -716,11 +718,36 @@ class Zona(models.Model):
     geohash_ref = models.CharField(max_length=7,
             help_text='Geohash del lugar de referencia')
     geom = models.MultiPolygonField(null=True)
+
+    pais = models.ForeignKey(Pais)
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_basica = ChainedForeignKey(
+        'Ut_basica',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
+    distrito = ChainedForeignKey(
+        'Distrito',
+        chained_field="ut_basica",
+        chained_model_field="ut_basica",
+        show_all=False,
+        auto_choose=True
+    )
     objects = models.GeoManager()
 
     def __unicode__(self):
         return self.zona
 
+    def ubicacion(self):
+        return '%s -- %s - %s - %s - %s' % (self.distrito, self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
 
 class Recinto(models.Model):
     ESTADOS = Choices(

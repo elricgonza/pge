@@ -129,7 +129,19 @@ class AsientoAdmin(admin.ModelAdmin):
 @admin.register(Distrito)
 class DistritoAdmin(admin.ModelAdmin):
     search_fields = ('distrito', 'fecha_ingreso', 'id')
-    list_display = ('id', 'distrito', 'fecha_ingreso')
+    list_display = ('id', 'distrito', 'fecha_ingreso', 'ubicacion')
+    exclude = ('fecha_act',)
+    readonly_fields = ('fecha_ingreso', 'fecha_act')
+
+    fieldsets = (
+        ('Datos Ubicación Geográfica', {
+            'fields': ('pais', 'ut_sup', 'ut_basica',
+                      )
+        }),
+        ('Datos del Distrito', {'fields': ('distrito', 'nro_distrito', 'etapa', 'fecha_ingreso', 'obs', 'geom'
+                          )
+        }),
+    )
 
 
 @admin.register(Asiento_distrito)
@@ -148,7 +160,19 @@ class Asiento_imgAdmin(admin.ModelAdmin):
 @admin.register(Zona)
 class ZonaAdmin(admin.ModelAdmin):
     search_fields = ('zona', 'distrito')
-    list_display = ('id', 'zona', 'distrito')
+    list_display = ('id', 'zona', 'fecha_ingreso', 'ubicacion')
+    exclude = ('fecha_act',)
+    readonly_fields = ('fecha_ingreso', 'fecha_act')
+
+    fieldsets = (
+        ('Datos Ubicación Geográfica', {
+            'fields': ('pais', 'ut_sup', 'ut_basica', 'distrito',
+                       ('lat_ref', 'long_ref', 'geohash_ref'),
+            )
+        }),
+        ('Datos de la Zona', {'fields': ('zona', 'etapa', 'fecha_ingreso', 'obs', 'geom' )
+        }),
+    )
 
 
 # recinto
