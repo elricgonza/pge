@@ -275,6 +275,11 @@ class Ut_basica(models.Model):
 
 
 class Localidad(models.Model):
+    TIPO_LOCALIDAD = Choices(
+        (1, 'CAPITAL DEL PAIS', ('CAPITAL_PAIS')),
+        (2, 'CAPITAL DE DEPARTAMENTO', ('CAPITAL_DEPARTAMENTO')),
+        (3, 'CIUDAD', ('CIUDAD')),
+        (3, 'LOCALIDAD', ('LOCALIDAD')))
     continente = models.ForeignKey(Continente)
     pais = ChainedForeignKey(
         'Pais',
@@ -330,6 +335,7 @@ class Localidad(models.Model):
     doc_legal = models.CharField(max_length=100,
             help_text='Indica si la unidad territorial esta vigente')
     #ut_basica = models.ForeignKey('Ut_basica')
+    tipo_localidad = models.PositiveSmallIntegerField(choices=TIPO_LOCALIDAD, default=TIPO_LOCALIDAD.LOCALIDAD)
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     latitud = models.FloatField(
@@ -378,6 +384,7 @@ class Asiento(models.Model):
         (1, 'PROPUESTA', ('PROPUESTA')),
         (2, 'REVISION', ('REVISION')),
         (3, 'APROBADO', ('APROBADO')))
+    #id = models.IntegerField(primary_key=True)
     continente = models.ForeignKey(Continente)
     pais = ChainedForeignKey(
         'Pais',
@@ -416,6 +423,7 @@ class Asiento(models.Model):
         blank = True,
         null = True
     )
+
     nom_asiento = models.CharField(max_length=100,
                                   verbose_name='Nombre Asiento Electoral',
                                   help_text='Ingrese nombre del Asiento Electoral'
@@ -424,13 +432,13 @@ class Asiento(models.Model):
     #localidad = models.ForeignKey('Localidad')
     doc_actualizacion = models.CharField(max_length=50,
                                      verbose_name='Doc. de Actualización RSP',
-                                     help_text='Resolución de sala plena, (creacion/suspensión/supresión/..etc), Inf. u otro'
+                                         help_text='Resolución de sala plena, (creacion/suspensión/supresión/..etc), Inf. u otro Informe Técnico'
                                      )
     fecha_doc_actualizacion = models.DateField(
                                      verbose_name='Fecha resolución',
-                                     help_text='Fecha resolución de sala plena'
+                                     help_text='Fecha resolución de sala plena o de doc. de actualización'
                                      )
-    descripcion_ubicacion = models.TextField(blank=True,
+    descripcion_ubicacion = models.TextField(blank=True, null=True,
                                     verbose_name='Descripción ubicación',
                                     help_text='Descripción de la ubicación del asiento electoral'
                                             )
@@ -446,11 +454,8 @@ class Asiento(models.Model):
                                     verbose_name='Etapa',
                                     help_text='Describe la etapa en la que se encuentra la solicitud'
                                             )
-    #fecha_ingreso = models.DateTimeField(auto_now=True)
     fecha_ingreso = models.DateTimeField(default=timezone.now)
-    obs = models.CharField(max_length=100)
-    #fecha_act = models.DateTimeField(auto_now_add=True)
-    #fecha_act = models.AutoDateTimeField(default=timezone.now)
+    obs = models.CharField(max_length=100, blank= True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
     existe_orc = models.NullBooleanField(blank=True,
                                     verbose_name='Existe O.R.C.',
@@ -608,8 +613,9 @@ class Asiento_img(models.Model):
     VISTAS = Choices(
         (1, 'PANORAMICA', ('PANORAMICA')),
         (2, 'VISTA1', ('VISTA1')),
-        (3, 'VISTA2', ('VISTA2')),
-        (4, 'VISTA3', ('VISTA3')))
+        (3, 'CROQUIS', ('CROQUIS')),
+        (4, 'FORMULARIO-1', ('FORMULARIO-1')),
+        (5, 'FORMULARIO-2', ('FORMULARIO-2')))
     asiento = models.ForeignKey('Asiento')
     vista = models.PositiveSmallIntegerField(choices=VISTAS)
     #img = models.ImageField(upload_to="img", null=True, blank=True)
@@ -669,7 +675,7 @@ class Distrito(models.Model):
     nro_distrito = models.CharField(max_length=10)
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
     fecha_ingreso = models.DateTimeField(default=timezone.now)
-    obs = models.CharField(max_length=150)
+    obs = models.CharField(max_length=150, blank=True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
     geom = models.MultiPolygonField(null=True)
     pais = models.ForeignKey(Pais)
@@ -700,6 +706,10 @@ class Asiento_distrito(models.Model):
     distrito = models.ForeignKey(Distrito, on_delete=models.CASCADE)
 
 
+    def __unicode__(self):
+        return '%s' % self.distrito
+
+
 class Zona(models.Model):
     ETAPAS = Choices(
         (1, 'PROPUESTA', ('PROPUESTA')),
@@ -709,14 +719,8 @@ class Zona(models.Model):
     #distrito = models.ForeignKey('Distrito')
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
     fecha_ingreso = models.DateTimeField(default=timezone.now)
-    obs = models.CharField(max_length=120)
+    obs = models.CharField(max_length=120, blank=True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
-    lat_ref = models.FloatField(
-            help_text='Latitud del lugar de referencia')
-    long_ref = models.FloatField(
-            help_text='Longitud del lugar de referencia')
-    geohash_ref = models.CharField(max_length=7,
-            help_text='Geohash del lugar de referencia')
     geom = models.MultiPolygonField(null=True)
 
     pais = models.ForeignKey(Pais)
@@ -807,8 +811,25 @@ class Recinto(models.Model):
         chained_field="ut_basica",
         chained_model_field="ut_basica",
         show_all=False,
+        auto_choose=True,
+        help_text="Seleccione Asiento Electoral"
+    )
+    Asiento_distrito = ChainedForeignKey(
+        'Asiento_distrito',
+        chained_field="asiento",
+        chained_model_field="asiento",
+        show_all=False,
         auto_choose=True
     )
+    zona = ChainedForeignKey(
+        'zona',
+        chained_field="Asiento_distrito",
+        chained_model_field="Asiento_distrito",
+        show_all=False,
+        auto_choose=True
+    )
+
+
     tipo = models.PositiveSmallIntegerField(
         choices=TIPOS, default=TIPOS.UNIDAD_EDUCATIVA)
     zona = models.ForeignKey('Zona')
@@ -843,21 +864,37 @@ class Recinto(models.Model):
         choices=ESTADOS, default=ESTADOS.HABILITADO)
     tipo_circun = models.ForeignKey('Tipo_circun')
     rue = models.PositiveIntegerField(
-                                        verbose_name='Código RUE',
-                                        help_text='Código RUE de la Unidad Educativa'
+        verbose_name='Código RUE Infraestructura',
+        help_text='Código del edificio de la Unidad Educativa'
     )
+    rue1 = models.PositiveIntegerField(
+        verbose_name='Código RUE-1',
+        help_text='Código RUE de la  Unidad Educativa'
+    )
+    rue2 = models.PositiveIntegerField(
+        verbose_name='Código RUE-2',
+        help_text='Código RUE de la  Unidad Educativa'
+    )
+
     etapa = models.PositiveSmallIntegerField(choices=ETAPAS, default=ETAPAS.PROPUESTA)
     fecha_ingreso = models.DateTimeField(default=timezone.now,
                                         verbose_name='Fecha Ingreso',
                                         help_text='Fecha de ingreso al sistema'
     )
     fecha_act = models.DateTimeField(auto_now_add=True)
-    obs = models.CharField(max_length=120)
+    obs = models.CharField(max_length=120, blank=True, null=True)
     latitud = models.FloatField(validators=[validate_lat],
                                     help_text='Latitud/Longitud del recinto'
                                 )
     longitud = models.FloatField(validators=[validate_long])
     geohash = models.CharField(max_length=9, null=True, blank= True)
+    idloc = models.PositiveIntegerField(
+                                        verbose_name= 'IDLOC',
+                                        help_text= 'Para conformación de Código compuesto de Recinto (Idloc, Reci) en estructura anterior'
+    )
+    reci = models.PositiveIntegerField(
+                                        verbose_name= 'RECI',
+    )
     geom = models.PointField(null=True)
     objects = models.GeoManager()
 
@@ -887,7 +924,10 @@ class Recinto_img(models.Model):
         (1, 'PANORAMICA', ('PANORAMICA')),
         (2, 'FRONTAL', ('FRONTAL')),
         (3, 'INTERIOR', ('INTERIOR')),
-        (4, 'OTRO', ('OTRO')))
+        (4, 'CROQUIS', ('CROQUIS')),
+        (5, 'FORMULARIO-1', ('FORMULARIO-1')),
+        (6, 'FORMULARIO-2', ('FORMULARIO-2')),
+        (7, 'OTRO', ('OTRO')))
     recinto = models.ForeignKey('Recinto')
     vista = models.PositiveSmallIntegerField(choices=VISTAS)
     img = VersatileImageField(upload_to=get_recinto_img_path)

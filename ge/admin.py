@@ -97,6 +97,10 @@ class Asiento_detalleInline(admin.TabularInline):
     model = Asiento_detalle
 
 
+class Asiento_distritoInline(admin.TabularInline):
+    model = Asiento_distrito
+    extra = 1
+
 @admin.register(Asiento)
 class AsientoAdmin(admin.ModelAdmin):
     list_filter = ('ut_basica',)
@@ -104,7 +108,7 @@ class AsientoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_asiento', 'ubicacion')
     exclude = ('fecha_act', 'geom')
     readonly_fields = ('fecha_ingreso', 'fecha_act')
-    inlines = (Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
+    inlines = (Asiento_distritoInline, Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
 
     '''
     fields = [('continente_id', 'pais_id', 'ut_sup_id'),('ut_intermedia_id', 'ut_basica_id', 'localidad_id'),
@@ -159,7 +163,7 @@ class Asiento_imgAdmin(admin.ModelAdmin):
 
 @admin.register(Zona)
 class ZonaAdmin(admin.ModelAdmin):
-    search_fields = ('zona', 'distrito')
+    search_fields = ('zona', 'distrito', 'ut_basica')
     list_display = ('id', 'zona', 'fecha_ingreso', 'ubicacion')
     exclude = ('fecha_act',)
     readonly_fields = ('fecha_ingreso', 'fecha_act')
@@ -167,8 +171,7 @@ class ZonaAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Datos Ubicación Geográfica', {
             'fields': ('pais', 'ut_sup', 'ut_basica', 'distrito',
-                       ('lat_ref', 'long_ref', 'geohash_ref'),
-            )
+                    )
         }),
         ('Datos de la Zona', {'fields': ('zona', 'etapa', 'fecha_ingreso', 'obs', 'geom' )
         }),
@@ -196,12 +199,12 @@ class RecintoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
-            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'asiento',
+            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'asiento', 'Asiento_distrito', ('zona', 'direccion'),
                            ('latitud', 'longitud', 'geohash')
                       )
         }),
-        ('Datos del Recinto Electoral', {'fields': ('nom_recinto', 'direccion', 'zona', 'estado', 'tipo', 'tipo_circun', 'doc_actualizacion', 'fecha_doc_actualizacion',
-                          'max_mesas', 'nro_pisos', 'nro_aulas', 'rue', 'etapa', 'fecha_ingreso', 'obs'
+        ('Datos del Recinto Electoral', {'fields': ('nom_recinto', 'estado', 'tipo', 'tipo_circun', 'doc_actualizacion', 'fecha_doc_actualizacion',
+                          'max_mesas', 'nro_pisos', 'nro_aulas', 'rue', 'etapa', 'fecha_ingreso', 'obs', ('idloc', 'reci')
                           )
         }),
     )
