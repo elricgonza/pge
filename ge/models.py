@@ -309,15 +309,20 @@ class Localidad(models.Model):
         show_all=False,
         auto_choose=True
     )
-    nom_localidad = models.CharField(max_length=80,
-            verbose_name = 'Nombre Ud.Terr. - equivalente a localidad en Bolivia')
     id_origen = models.IntegerField()
     version = models.PositiveSmallIntegerField()
+    nom_localidad = models.CharField(max_length=80,
+            verbose_name = 'Nombre Ud.Terr. - equivalente a localidad en Bolivia')
     nivel_ut = models.ForeignKey('Nivel_ut')
+    cod_ungle = models.CharField(max_length=11,
+            help_text='Conformación de: ISO+ ISOnumérico+ ISOdep+ Nivel Loc.+ secuencial',
+            verbose_name ='Código UNGLE')
     cod_ine = models.CharField(max_length=15,
+            blank= True, null= True,
             help_text='Código del INE si corresponde a Bolivia',
             verbose_name = 'Código INE')
     cod_ine_shp = models.CharField(max_length=15,
+            blank= True, null= True,
             help_text='Código del INE de fuente shapefile',
             verbose_name = 'Código INE - shapefile')
     periodo_ini = models.DateField(
@@ -327,13 +332,17 @@ class Localidad(models.Model):
     actual = models.BooleanField(
             help_text='Indica si la unidad territorial esta vigente')
     censo = models.IntegerField(
+            blank= True, null= True,
             help_text='Año del Censo realizado por el INE')
     poblacion = models.IntegerField(
+            blank= True, null= True,
             help_text='Número de Población según el censo')
     viviendas = models.IntegerField(
+            blank= True, null= True,
             help_text='Número de viviendas según el censo')
     doc_legal = models.CharField(max_length=100,
-            help_text='Indica si la unidad territorial esta vigente')
+            blank= True, null= True,
+            help_text='Documentación Legal de respaldo de la localidad')
     #ut_basica = models.ForeignKey('Ut_basica')
     tipo_localidad = models.PositiveSmallIntegerField(choices=TIPO_LOCALIDAD, default=TIPO_LOCALIDAD.LOCALIDAD)
     fecha_ingreso = models.DateField(
@@ -343,6 +352,7 @@ class Localidad(models.Model):
     longitud = models.FloatField(
             help_text='Longitud de la localidad')
     geohash = models.CharField(max_length=7,
+            blank= True, null= True,
             help_text='Geohash de la ubicación de la Localidad')
     geom = models.PointField(null=True)
     objects = models.GeoManager()
