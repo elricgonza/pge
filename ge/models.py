@@ -276,8 +276,8 @@ class Ut_basica(models.Model):
 
 class Localidad(models.Model):
     TIPO_LOCALIDAD = Choices(
-        (1, 'CAPITAL DEL PAIS', ('CAPITAL_PAIS')),
-        (2, 'CAPITAL DE DEPARTAMENTO', ('CAPITAL_DEPARTAMENTO')),
+        (1, 'CAPITAL_PAIS', ('CAPITAL DEL PAIS')),
+        (2, 'CAPITAL_DEPARTAMENTO', ('CAPITAL DE DEPARTAMENTO')),
         (3, 'CIUDAD', ('CIUDAD')),
         (3, 'LOCALIDAD', ('LOCALIDAD')))
     continente = models.ForeignKey(Continente)
@@ -366,6 +366,9 @@ class Localidad(models.Model):
     def __unicode__(self):
         return self.nom_localidad
 
+    def ubicacion(self):
+        return '%s - %s - %s - %s' % (self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
+
 
 class Localidad_fuente(models.Model):
     localidad = models.ForeignKey('Localidad')
@@ -385,11 +388,11 @@ class Localidad_fuente(models.Model):
 ## ge
 class Asiento(models.Model):
     ESTADOS = Choices(
-        (1, 'ACTIVO', ('ACTIVO')),
+        (1, 'HABILITADO', ('HABILITADO')),
         (2, 'REHABILITADO', ('REHABILITADO')),
-        (3, 'TRASLADADO', ('TRASLADADO')),
-        (4, 'SUSPENDIDO', ('SUSPENDIDO')),
-        (5, 'SUPRIMIDO', ('SUPRIMIDO')))
+        (3, 'SUSPENDIDO', ('SUSPENDIDO')),
+        (4, 'SUPRIMIDO', ('SUPRIMIDO')),
+        (5, 'TRASLADADO', ('TRASLADADO')))
     ETAPAS = Choices(
         (1, 'PROPUESTA', ('PROPUESTA')),
         (2, 'REVISION', ('REVISION')),
@@ -438,8 +441,6 @@ class Asiento(models.Model):
                                   verbose_name='Nombre Asiento Electoral',
                                   help_text='Ingrese nombre del Asiento Electoral'
                                   )
-    #ut_basica = models.ForeignKey('Ut_basica')
-    #localidad = models.ForeignKey('Localidad')
     doc_actualizacion = models.CharField(max_length=50,
                                      verbose_name='Doc. de Actualización RSP',
                                          help_text='Resolución de sala plena, (creacion/suspensión/supresión/..etc), Inf. u otro Informe Técnico'
@@ -494,6 +495,9 @@ class Asiento(models.Model):
     def ubicacion(self):
         return '%s - %s - %s - %s' % (self.ut_basica, self.ut_basica.ut_intermedia.nom_ut_intermedia, self.ut_basica.ut_intermedia.ut_sup.nom_ut_sup, self.ut_basica.ut_intermedia.ut_sup.pais.nom_pais_alias)
 
+    #    class Meta:
+    #        ordering = ['-ut_basica',]
+
 '''
     def save(self, *args, **kwargs):
         self.fecha_act = datetime.now() #.replace(tzinfo=get_current_timezone())
@@ -521,8 +525,32 @@ class Ruta(models.Model):
         return str(self.nro_ruta)
 
 class Asiento_jurisdiccion(models.Model):
+    pais = models.ForeignKey(Pais)
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
+    ut_basica = ChainedForeignKey(
+        'Ut_basica',
+        chained_field="ut_sup",
+        chained_model_field="ut_sup",
+        show_all=False,
+        auto_choose=True
+    )
+    localidad = ChainedForeignKey(
+        'Localidad',
+        chained_field="ut_basica",
+        chained_model_field="ut_basica",
+        show_all=False,
+        auto_choose=True,
+        blank = True,
+        null = True
+    )
     asiento = models.ForeignKey('Asiento')
-    localidad = models.ForeignKey('Localidad')
+    #localidad = models.ForeignKey('Localidad')
     accesibilidad = models.CharField(max_length=100)
     distancia_km = models.FloatField()
     geohash = models.CharField(max_length=8)
@@ -868,20 +896,23 @@ class Recinto(models.Model):
     )
     direccion = models.CharField(max_length=150,
                                         verbose_name='Dirección',
-                                        help_text='Dirección - Calle, #, Zona...'
+                                        help_text='Dirección - Calle, #, ...'
     )
     estado = models.PositiveSmallIntegerField(
         choices=ESTADOS, default=ESTADOS.HABILITADO)
     tipo_circun = models.ForeignKey('Tipo_circun')
     rue = models.PositiveIntegerField(
+        blank = True, null= True
         verbose_name='Código RUE Infraestructura',
         help_text='Código del edificio de la Unidad Educativa'
     )
     rue1 = models.PositiveIntegerField(
+        blank = True, null= True
         verbose_name='Código RUE-1',
         help_text='Código RUE de la  Unidad Educativa'
     )
     rue2 = models.PositiveIntegerField(
+        blank = True, null= True
         verbose_name='Código RUE-2',
         help_text='Código RUE de la  Unidad Educativa'
     )

@@ -9,6 +9,12 @@ AdminSite.site_header = 'OEP-Geografía Electoral'
 AdminSite.index_title = 'Administración-BD'
 
 
+#@admin.register(Asiento_jurisdiccion)
+#class Asiento_jurisdiccion(admin.ModelAdmin):
+    #pass:
+    #fields = ('nom_continente',)
+    #list_display = ('nom_continente', 'id')
+
 @admin.register(Continente)
 class Continente(admin.ModelAdmin):
     fields = ('nom_continente',)
@@ -43,9 +49,16 @@ class Ut_basicaAdmin(admin.ModelAdmin):
 
 @admin.register(Localidad)
 class LocalidadAdmin(admin.ModelAdmin):
-    search_fields = ('nom_localidad', 'ut_basica__nom_ut_basica')
-    list_display = ('id', 'nom_localidad', 'ut_basica')
+    list_per_page = 50
+    #search_fields = ('nom_localidad', 'ut_basica__nom_ut_basica')
+    search_fields = ('nom_localidad', )
+    #list_display = ('id', 'nom_localidad', 'ut_basica', 'ut_intermedia', 'ut_sup', 'pais')
+    #list_display = ('id', 'nom_localidad', 'ubicacion')
+    list_display = ('id', 'nom_localidad', 'cod_ungle', 'poblacion', 'ut_basica')
 
+    #list_select_related = ('ut_basica', 'ut_intermedia', 'ut_sup', 'pais')
+    ##list_select_related = ('ubicacion',)
+    list_select_related = ('ut_basica',)
 
 @admin.register(Nivel_ut)
 class Nivel_utAdmin(admin.ModelAdmin):
@@ -103,7 +116,8 @@ class Asiento_distritoInline(admin.TabularInline):
 
 @admin.register(Asiento)
 class AsientoAdmin(admin.ModelAdmin):
-    list_filter = ('ut_basica',)
+    #list_filter = ('ut_basica',)
+    list_filter = ('ut_sup',)
     search_fields = ('nom_asiento', 'ut_basica')
     list_display = ('id', 'nom_asiento', 'ubicacion')
     exclude = ('fecha_act', 'geom')
@@ -159,6 +173,10 @@ class Asiento_imgAdmin(admin.ModelAdmin):
     search_fields = ('asiento', )
     list_display = ('id', 'asiento', 'vista', 'img')
 
+
+@admin.register(Asiento_jurisdiccion)
+class Asiento_jurisdiccion(admin.ModelAdmin):
+    list_display = ('id', 'distancia_km', 'obs')
 
 
 @admin.register(Zona)
