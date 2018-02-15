@@ -453,7 +453,7 @@ class Asiento(models.Model):
                                     verbose_name='Descripción ubicación',
                                     help_text='Descripción de la ubicación del asiento electoral'
                                             )
-    estado = models.PositiveSmallIntegerField(choices=ESTADOS, default=ESTADOS.ACTIVO,
+    estado = models.PositiveSmallIntegerField(choices=ESTADOS, default=ESTADOS.HABILITADO,
                                     verbose_name='Estado',
                                     help_text='Estado del asiento electoral'
                                              )
@@ -551,14 +551,28 @@ class Asiento_jurisdiccion(models.Model):
     )
     asiento = models.ForeignKey('Asiento')
     #localidad = models.ForeignKey('Localidad')
-    accesibilidad = models.CharField(max_length=100)
-    distancia_km = models.FloatField()
-    geohash = models.CharField(max_length=8)
-    latitud = models.FloatField()
-    longitud = models.FloatField()
-    obs = models.CharField(max_length=200)
-    fecha_act = models.DateTimeField()
-    geom = models.PointField(null=True)
+    accesibilidad = models.CharField(
+        blank = True, null = True,
+        max_length=100,
+        help_text = 'Descripción de la accesibilidad'
+        )
+    distancia_km = models.FloatField(
+        help_text = 'Distancia aproximada'
+        )
+    geohash = models.CharField(
+        blank = True, null = True,
+        max_length=8)
+    latitud = models.FloatField(
+        #blank = True, null = True,
+        )
+    longitud = models.FloatField(
+        #blank = True, null = True,
+        )
+    obs = models.CharField(max_length=200,
+        blank = True, null = True
+        )
+    fecha_act = models.DateTimeField(auto_now=True)
+    geom = models.PointField(blank= True, null=True)
     objects = models.GeoManager()
 
 
@@ -902,17 +916,17 @@ class Recinto(models.Model):
         choices=ESTADOS, default=ESTADOS.HABILITADO)
     tipo_circun = models.ForeignKey('Tipo_circun')
     rue = models.PositiveIntegerField(
-        blank = True, null= True
+        blank = True, null= True,
         verbose_name='Código RUE Infraestructura',
         help_text='Código del edificio de la Unidad Educativa'
     )
     rue1 = models.PositiveIntegerField(
-        blank = True, null= True
+        blank = True, null= True,
         verbose_name='Código RUE-1',
         help_text='Código RUE de la  Unidad Educativa'
     )
     rue2 = models.PositiveIntegerField(
-        blank = True, null= True
+        blank = True, null= True,
         verbose_name='Código RUE-2',
         help_text='Código RUE de la  Unidad Educativa'
     )
