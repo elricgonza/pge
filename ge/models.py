@@ -998,9 +998,15 @@ class Categoria(models.Model):
         return self.nom_categoria
 
 class Subcategoria(models.Model):
-    categoria = models.ForeignKey(Categoria)
-    nom_subcategoria = models.CharField(max_length=100)
-    obs = models.CharField(max_length=220)
+    categoria = models.ForeignKey(Categoria,
+                                 verbose_name = 'Categoría'
+                                 )
+    nom_subcategoria = models.CharField(max_length=100,
+                                 verbose_name = 'Nombre de Sub Categoría'
+                                       )
+    obs = models.CharField(max_length=220,
+                          blank= True, null= True
+                          )
 
     def __unicode__(self):
         return self.nom_subcategoria
@@ -1031,6 +1037,9 @@ class Asiento_detalle(models.Model):
         show_all=False,
         auto_choose=True
     )
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100,
+                                  blank= True, null= True,
+                                  verbose_name = 'Descripción Adicional'
+                                  )
     def __unicode__(self):
         return self.descripcion
