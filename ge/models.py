@@ -559,20 +559,11 @@ class Asiento_jurisdiccion(models.Model):
     distancia_km = models.FloatField(
         help_text = 'Distancia aproximada'
         )
-    geohash = models.CharField(
-        blank = True, null = True,
-        max_length=8)
-    latitud = models.FloatField(
-        #blank = True, null = True,
-        )
-    longitud = models.FloatField(
-        #blank = True, null = True,
-        )
     obs = models.CharField(max_length=200,
         blank = True, null = True
         )
     fecha_act = models.DateTimeField(auto_now=True)
-    geom = models.PointField(blank= True, null=True)
+    #geom = models.PointField(blank= True, null=True)
     objects = models.GeoManager()
 
 

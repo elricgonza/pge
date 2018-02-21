@@ -49,7 +49,7 @@ class Ut_basicaAdmin(admin.ModelAdmin):
 
 @admin.register(Localidad)
 class LocalidadAdmin(admin.ModelAdmin):
-    list_per_page = 50
+    list_per_page = 30
     #search_fields = ('nom_localidad', 'ut_basica__nom_ut_basica')
     search_fields = ('nom_localidad', )
     #list_display = ('id', 'nom_localidad', 'ut_basica', 'ut_intermedia', 'ut_sup', 'pais')
@@ -59,6 +59,8 @@ class LocalidadAdmin(admin.ModelAdmin):
     #list_select_related = ('ut_basica', 'ut_intermedia', 'ut_sup', 'pais')
     ##list_select_related = ('ubicacion',)
     list_select_related = ('ut_basica',)
+    list_display_links =('id', 'nom_localidad',)
+    ordering = ('nom_localidad',)
 
 @admin.register(Nivel_ut)
 class Nivel_utAdmin(admin.ModelAdmin):
@@ -120,8 +122,13 @@ class AsientoAdmin(admin.ModelAdmin):
     list_filter = ('ut_sup',)
     search_fields = ('nom_asiento', 'ut_basica')
     list_display = ('id', 'nom_asiento', 'ubicacion')
-    exclude = ('fecha_act', 'geom')
+    #exclude = ('fecha_act', 'geom')
+    exclude = ('fecha_act', )
     readonly_fields = ('fecha_ingreso', 'fecha_act')
+    list_display_links =('id', 'nom_asiento',)
+    date_hierarchy = 'fecha_act'
+    ordering = ('nom_asiento',)
+    #raw_id_fields = ('localidad',)
     inlines = (Asiento_distritoInline, Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
 
     '''
@@ -140,6 +147,8 @@ class AsientoAdmin(admin.ModelAdmin):
                           )
         }),
         ('Datos si existe Oficialía de Registro Civil', {'fields':('existe_orc', 'numero_orc')
+        }),
+        ('Geometría', {'fields':('geom', )
         }),
     )
 
@@ -213,6 +222,9 @@ class RecintoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_recinto', 'ubicacion')
     exclude = ('fecha_act', 'geom')
     readonly_fields = ('fecha_ingreso', 'fecha_act')
+    list_display_links =('id', 'nom_recinto',)
+    date_hierarchy = 'fecha_act'
+    ordering = ('nom_recinto',)
     inlines = (Recinto_detalleInline, Recinto_imgInline) #, RutaInline, Asiento_jurisdiccionInline)
 
     fieldsets = (
