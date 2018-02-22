@@ -2,6 +2,7 @@
 from django.contrib import admin
 from ge.models import *
 from django.contrib.admin import AdminSite
+import psycopg2
 
 
 AdminSite.site_title = 'OEP'
@@ -124,7 +125,7 @@ class AsientoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_asiento', 'ubicacion')
     #exclude = ('fecha_act', 'geom')
     exclude = ('fecha_act', )
-    readonly_fields = ('fecha_ingreso', 'fecha_act')
+    readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
     list_display_links =('id', 'nom_asiento',)
     date_hierarchy = 'fecha_act'
     ordering = ('nom_asiento',)
@@ -142,15 +143,39 @@ class AsientoAdmin(admin.ModelAdmin):
                            ('latitud', 'longitud', 'geohash')
                       )
         }),
+        ('Geometría', {'fields':('geom', )
+        }),
         ('Datos del Asiento Electoral', {'fields': ('nom_asiento', 'doc_actualizacion', 'fecha_doc_actualizacion', 'estado',
                           'proceso_activo', 'etapa', 'fecha_ingreso', 'obs', 'descripcion_ubicacion'
                           )
         }),
         ('Datos si existe Oficialía de Registro Civil', {'fields':('existe_orc', 'numero_orc')
         }),
-        ('Geometría', {'fields':('geom', )
-        }),
     )
+
+    def save_model(self, request, obj, form, change):
+        try:
+            conn = psycopg2.connect("dbname='geodb' user='uge' host= 'localhost' password= 'f'")
+            cur = conn.cursor()
+            #cur.callproc('st_geohash', ())
+            sql = """
+                select st_SetSRID(st_MakePoint(%s, %s), 4326)
+                """
+            cur.execute(sql, (obj.longitud, obj.latitud))
+            obj.geom = cur.fetchone()[0]
+
+            sql = """
+                select st_Geohash(st_SetSRID(st_MakePoint(%s, %s), 4326), 8)
+                """
+            #cur.execute(sql, (obj.geom))
+            cur.execute(sql, (obj.longitud, obj.latitud))
+            obj.geohash = cur.fetchone()[0]
+
+            cur.close()
+
+            obj.save()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
 
 
 @admin.register(Distrito)
