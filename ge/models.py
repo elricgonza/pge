@@ -480,7 +480,7 @@ class Asiento(models.Model):
                                     help_text='Latitud/Longitud de la ubicación de la plaza principal u otra ubicación de interés en caso de que no cuente con plaza '
                                 )
     longitud = models.FloatField(validators=[validate_long])
-    geohash = models.CharField(max_length=8, null=True, blank= True)
+    geohash = models.CharField(max_length=9, null=True, blank= True)
     geom = models.PointField(null=True, blank=True)
     objects = models.GeoManager()
     # GeoDjango-specific: a geometry field (MultiMultiPolygonField), and

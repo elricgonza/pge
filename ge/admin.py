@@ -184,6 +184,7 @@ class DistritoAdmin(admin.ModelAdmin):
     list_display = ('id', 'distrito', 'fecha_ingreso', 'ubicacion')
     exclude = ('fecha_act',)
     readonly_fields = ('fecha_ingreso', 'fecha_act')
+    list_display_links =('id', 'distrito',)
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
@@ -219,6 +220,7 @@ class ZonaAdmin(admin.ModelAdmin):
     list_display = ('id', 'zona', 'fecha_ingreso', 'ubicacion')
     exclude = ('fecha_act',)
     readonly_fields = ('fecha_ingreso', 'fecha_act')
+    list_display_links =('id', 'zona',)
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
@@ -245,8 +247,8 @@ class RecintoAdmin(admin.ModelAdmin):
     list_filter = ('ut_basica',)
     search_fields = ('nom_recinto', 'ut_basica')
     list_display = ('id', 'nom_recinto', 'ubicacion')
-    exclude = ('fecha_act', 'geom')
-    readonly_fields = ('fecha_ingreso', 'fecha_act')
+    exclude = ('fecha_act', )
+    readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
     list_display_links =('id', 'nom_recinto',)
     date_hierarchy = 'fecha_act'
     ordering = ('nom_recinto',)
@@ -258,11 +260,38 @@ class RecintoAdmin(admin.ModelAdmin):
                            ('latitud', 'longitud', 'geohash')
                       )
         }),
+        ('Geometría', {'fields':('geom', )
+        }),
         ('Datos del Recinto Electoral', {'fields': ('nom_recinto', 'estado', 'tipo', 'tipo_circun', 'doc_actualizacion', 'fecha_doc_actualizacion',
-                          'max_mesas', 'nro_pisos', 'nro_aulas', 'rue', 'etapa', 'fecha_ingreso', 'obs', ('idloc', 'reci')
+                          'max_mesas', 'nro_pisos', 'nro_aulas', ('rue', 'rue1', 'rue2'), 'etapa', 'fecha_ingreso', 'obs', ('idloc', 'reci')
                           )
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        try:
+            conn = psycopg2.connect("dbname='geodb' user='uge' host= 'localhost' password= 'f'")
+            cur = conn.cursor()
+            #cur.callproc('st_geohash', ())
+            sql = """
+                select st_SetSRID(st_MakePoint(%s, %s), 4326)
+                """
+            cur.execute(sql, (obj.longitud, obj.latitud))
+            obj.geom = cur.fetchone()[0]
+
+            sql = """
+                select st_Geohash(st_SetSRID(st_MakePoint(%s, %s), 4326), 8)
+                """
+            #cur.execute(sql, (obj.geom))
+            cur.execute(sql, (obj.longitud, obj.latitud))
+            obj.geohash = cur.fetchone()[0]
+
+            cur.close()
+
+            obj.save()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
 
 @admin.register(Circun)
 class CircunAdmin(admin.ModelAdmin):
