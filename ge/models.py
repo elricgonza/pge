@@ -37,6 +37,42 @@ def validate_even(value):
         )
 
 
+def validate_max_mesas(value):
+    if value < 1 or value > 100:
+        raise ValidationError(
+            _('%(value)s Rango inválido...'),
+            params={'value': value},
+        )
+
+def validate_nro_pisos(value):
+    if value < 1 or value > 10:
+        raise ValidationError(
+            _('%(value)s Rango inválido...'),
+            params={'value': value},
+        )
+
+def validate_nro_aulas(value):
+    if value < 1 or value > 50:
+        raise ValidationError(
+            _('%(value)s Rango inválido...'),
+            params={'value': value},
+        )
+
+def validate_idloc(value):
+    if value < 1 or value > 5500:
+        raise ValidationError(
+            _('%(value)s Rango inválido...'),
+            params={'value': value},
+        )
+
+def validate_reci(value):
+    if value < 1 or value > 30000:
+        raise ValidationError(
+            _('%(value)s Rango inválido...'),
+            params={'value': value},
+        )
+
+
 class Continente (models.Model):
     nom_continente = models.CharField(max_length=100,
             verbose_name='Nombre del Continente')
@@ -279,7 +315,7 @@ class Localidad(models.Model):
         (1, 'CAPITAL_PAIS', ('CAPITAL DEL PAIS')),
         (2, 'CAPITAL_DEPARTAMENTO', ('CAPITAL DE DEPARTAMENTO')),
         (3, 'CIUDAD', ('CIUDAD')),
-        (3, 'LOCALIDAD', ('LOCALIDAD')))
+        (4, 'LOCALIDAD', ('LOCALIDAD')))
     continente = models.ForeignKey(Continente)
     pais = ChainedForeignKey(
         'Pais',
@@ -345,13 +381,15 @@ class Localidad(models.Model):
             help_text='Documentación Legal de respaldo de la localidad')
     #ut_basica = models.ForeignKey('Ut_basica')
     tipo_localidad = models.PositiveSmallIntegerField(choices=TIPO_LOCALIDAD, default=TIPO_LOCALIDAD.LOCALIDAD)
+    #obs = models.CharField(max_length=100, blank= True, null=True)
+    fecha_act = models.DateTimeField(auto_now=True)
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     latitud = models.FloatField(
             help_text='Latitud de la Localidad')
     longitud = models.FloatField(
             help_text='Longitud de la localidad')
-    geohash = models.CharField(max_length=7,
+    geohash = models.CharField(max_length=9,
             blank= True, null= True,
             help_text='Geohash de la ubicación de la Localidad')
     geom = models.PointField(null=True)
@@ -481,6 +519,11 @@ class Asiento(models.Model):
                                 )
     longitud = models.FloatField(validators=[validate_long])
     geohash = models.CharField(max_length=9, null=True, blank= True)
+    idloc = models.PositiveIntegerField(
+                                        verbose_name= 'IDLOC',
+                                        help_text= 'Para identificación de Asiento en estructura anterior',
+                                        validators=[validate_idloc]
+    )
     geom = models.PointField(null=True, blank=True)
     objects = models.GeoManager()
     # GeoDjango-specific: a geometry field (MultiMultiPolygonField), and
@@ -889,15 +932,18 @@ class Recinto(models.Model):
     )
     max_mesas = models.PositiveSmallIntegerField(
                                         verbose_name='Nro. Máx. mesas',
-                                        help_text='Nro. máximo de mesas'
+                                        help_text='Nro. máximo de mesas',
+                                        validators=[validate_max_mesas]
     )
     nro_pisos = models.PositiveIntegerField(
                                         verbose_name='Nro. Pisos',
-                                        help_text='Número de pisos del recinto'
+                                        help_text='Número de pisos del recinto',
+                                        validators=[validate_nro_pisos]
     )
     nro_aulas = models.PositiveSmallIntegerField(
                                         verbose_name='Nro. Aulas',
-                                        help_text='Número de aulas del recinto'
+                                        help_text='Número de aulas del recinto',
+                                        validators=[validate_nro_aulas]
     )
     direccion = models.CharField(max_length=150,
                                         verbose_name='Dirección',
@@ -936,12 +982,14 @@ class Recinto(models.Model):
     geohash = models.CharField(max_length=9, null=True, blank= True)
     idloc = models.PositiveIntegerField(
                                         verbose_name= 'IDLOC',
-                                        help_text= 'Para conformación de Código compuesto de Recinto (Idloc, Reci) en estructura anterior'
+                                        help_text= 'Para conformación de Código compuesto de Recinto (Idloc, Reci) en estructura anterior',
+                                        validators=[validate_idloc]
     )
     reci = models.PositiveIntegerField(
                                         verbose_name= 'RECI',
+                                        validators=[validate_reci]
     )
-    geom = models.PointField(null=True)
+    geom = models.PointField(null=True, blank= True)
     objects = models.GeoManager()
 
     def __unicode__(self):

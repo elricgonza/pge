@@ -63,6 +63,50 @@ class LocalidadAdmin(admin.ModelAdmin):
     list_display_links =('id', 'nom_localidad',)
     ordering = ('nom_localidad',)
 
+    readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
+
+
+    fieldsets = (
+        ('Datos Ubicación Geográfica', {
+            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica',
+                           ('latitud', 'longitud', 'geohash')
+                      )
+        }),
+        ('Geometría', {'fields':('geom', )
+        }),
+        ('Datos de la Localidad', {'fields': ('tipo_localidad', 'cod_ungle', 'nom_localidad', 'nivel_ut',  'doc_legal',
+                            ('cod_ine', 'cod_ine_shp'), ('id_origen', 'version'), ('periodo_ini', 'periodo_fin', 'actual'),
+                            ('poblacion', 'viviendas', 'censo'), 'fecha_ingreso', 'fecha_act'
+                            )
+        }),
+        #('Datos si existe Oficialía de Registro Civil', {'fields':('existe_orc', 'numero_orc')
+        #}),
+    )
+
+    def save_model(self, request, obj, form, change):
+        try:
+            conn = psycopg2.connect("dbname='geodb' user='uge' host= 'localhost' password= 'f'")
+            cur = conn.cursor()
+            #cur.callproc('st_geohash', ())
+            sql = """
+                select st_SetSRID(st_MakePoint(%s, %s), 4326)
+                """
+            cur.execute(sql, (obj.longitud, obj.latitud))
+            obj.geom = cur.fetchone()[0]
+
+            sql = """
+                select st_Geohash(st_SetSRID(st_MakePoint(%s, %s), 4326), 8)
+                """
+            #cur.execute(sql, (obj.geom))
+            cur.execute(sql, (obj.longitud, obj.latitud))
+            obj.geohash = cur.fetchone()[0]
+
+            cur.close()
+
+            obj.save()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
 @admin.register(Nivel_ut)
 class Nivel_utAdmin(admin.ModelAdmin):
     search_fields = ('ut_descripcion', 'pais')
@@ -146,7 +190,7 @@ class AsientoAdmin(admin.ModelAdmin):
         ('Geometría', {'fields':('geom', )
         }),
         ('Datos del Asiento Electoral', {'fields': ('nom_asiento', 'doc_actualizacion', 'fecha_doc_actualizacion', 'estado',
-                          'proceso_activo', 'etapa', 'fecha_ingreso', 'obs', 'descripcion_ubicacion'
+                          'proceso_activo', 'etapa', 'fecha_ingreso', 'obs', 'descripcion_ubicacion', ('idloc')
                           )
         }),
         ('Datos si existe Oficialía de Registro Civil', {'fields':('existe_orc', 'numero_orc')
