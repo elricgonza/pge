@@ -383,7 +383,7 @@ class Localidad(models.Model):
     tipo_localidad = models.PositiveSmallIntegerField(choices=TIPO_LOCALIDAD, default=TIPO_LOCALIDAD.LOCALIDAD)
     #obs = models.CharField(max_length=100, blank= True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
-    fecha_ingreso = models.DateField(
+    fecha_ingreso = models.DateTimeField(default=timezone.now,
             help_text='Fecha de ingreso al sistema')
     latitud = models.FloatField(
             help_text='Latitud de la Localidad')
@@ -392,12 +392,13 @@ class Localidad(models.Model):
     geohash = models.CharField(max_length=9,
             blank= True, null= True,
             help_text='Geohash de la ubicación de la Localidad')
-    geom = models.PointField(null=True)
+    geom = models.PointField(null=True, blank=True)
     objects = models.GeoManager()
 
     class Meta:
         db_table = 'g_localidad'
         unique_together = ('id_origen', 'version')
+        #unique_together = ('cod_ungle')
         verbose_name = '-Localidad-'
         verbose_name_plural = 'Localidades'
 

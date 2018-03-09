@@ -48,6 +48,22 @@ class Ut_basicaAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_ut_basica', 'ut_intermedia')
 
 
+
+def prefetch_idloc(instance):
+    """ Fetch the next value in a django id autofield postgresql sequence """
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT last_value + increment_by from  {0}_{1}_id_seq".format(
+            instance._meta.app_label.lower(),
+            instance._meta.object_name.lower(),
+        )
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return int(row[0])
+
+
+
 @admin.register(Localidad)
 class LocalidadAdmin(admin.ModelAdmin):
     list_per_page = 30
@@ -61,6 +77,8 @@ class LocalidadAdmin(admin.ModelAdmin):
     ##list_select_related = ('ubicacion',)
     list_select_related = ('ut_basica',)
     list_display_links =('id', 'nom_localidad',)
+    exclude = ('fecha_act',)
+    readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
     ordering = ('nom_localidad',)
 
     readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
@@ -100,12 +118,14 @@ class LocalidadAdmin(admin.ModelAdmin):
             #cur.execute(sql, (obj.geom))
             cur.execute(sql, (obj.longitud, obj.latitud))
             obj.geohash = cur.fetchone()[0]
+            #obj.id_origen =  obj.id  #prefetch_idloc(instance)   #pend solo p new
 
             cur.close()
 
             obj.save()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
+
 
 @admin.register(Nivel_ut)
 class Nivel_utAdmin(admin.ModelAdmin):
