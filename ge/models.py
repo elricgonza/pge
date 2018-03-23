@@ -734,6 +734,14 @@ class Tipo_circun(models.Model):
         return self.tipo_circun
 
 class Circun(models.Model):
+    pais = models.ForeignKey(Pais)
+    ut_sup = ChainedForeignKey(
+        'Ut_sup',
+        chained_field="pais",
+        chained_model_field="pais",
+        show_all=False,
+        auto_choose=True
+    )
     circun = models.PositiveSmallIntegerField()
     nom_circunscripcion = models.CharField(max_length=100)
     tipo_circun = models.ForeignKey('Tipo_circun')
