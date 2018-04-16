@@ -164,9 +164,9 @@ class RutaInline(admin.TabularInline):
         return self.extra
 
 
-class Asiento_circunInline(admin.TabularInline):
-    model = Asiento_circun
-    extra = 1
+#class Asiento_circunInline(admin.TabularInline):
+#    model = Asiento_circun
+#    extra = 1
 
 
 class Asiento_imgInline(admin.TabularInline):
@@ -194,7 +194,8 @@ class AsientoAdmin(admin.ModelAdmin):
     date_hierarchy = 'fecha_act'
     ordering = ('nom_asiento',)
     #raw_id_fields = ('localidad',)
-    inlines = (Asiento_distritoInline, Asiento_circunInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
+    #+RutaInline  inlines = (Asiento_distritoInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
+    inlines = (Asiento_distritoInline, Asiento_detalleInline, Asiento_imgInline, Asiento_jurisdiccionInline)
 
     '''
     fields = [('continente_id', 'pais_id', 'ut_sup_id'),('ut_intermedia_id', 'ut_basica_id', 'localidad_id'),
@@ -278,6 +279,11 @@ class Asiento_jurisdiccion(admin.ModelAdmin):
     list_display = ('id', 'distancia_km', 'obs')
 
 
+#class Zona_circunInline(admin.TabularInline):
+ #   model = Asiento_circun
+  #  extra = 1
+
+
 @admin.register(Zona)
 class ZonaAdmin(admin.ModelAdmin):
     search_fields = ('zona', 'distrito', 'ut_basica')
@@ -288,7 +294,11 @@ class ZonaAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
-            'fields': ('pais', 'ut_sup', 'ut_basica', 'distrito',
+            'fields': ('pais', 'ut_sup', 'ut_basica', 'distrito'
+                    )
+        }),
+        ('Circunscripción', {
+            'fields': ('circun',
                     )
         }),
         ('Datos de la Zona', {'fields': ('zona', 'etapa', 'fecha_ingreso', 'obs', 'geom' )

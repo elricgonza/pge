@@ -745,7 +745,7 @@ class Circun(models.Model):
     circun = models.PositiveSmallIntegerField()
     nom_circunscripcion = models.CharField(max_length=100)
     tipo_circun = models.ForeignKey('Tipo_circun')
-    asientos = models.ManyToManyField('Asiento', through='asiento_circun')
+    #asientos = models.ManyToManyField('Asiento', through='asiento_circun')
     geom = models.MultiPolygonField(null=True)
     objects = models.GeoManager()
 
@@ -755,9 +755,9 @@ class Circun(models.Model):
     #    pass
 
 
-class Asiento_circun(models.Model):
-    asiento = models.ForeignKey(Asiento, on_delete=models.CASCADE)
-    circun = models.ForeignKey(Circun, on_delete=models.CASCADE)
+#class Asiento_circun(models.Model):
+#    asiento = models.ForeignKey(Asiento, on_delete=models.CASCADE)
+#    circun = models.ForeignKey(Circun, on_delete=models.CASCADE)
 
 
 class Distrito(models.Model):
@@ -816,6 +816,7 @@ class Zona(models.Model):
     fecha_ingreso = models.DateTimeField(default=timezone.now)
     obs = models.CharField(max_length=120, blank=True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
+    circun = models.ForeignKey(Circun, default=1)
     geom = models.MultiPolygonField(null=True)
 
     pais = models.ForeignKey(Pais)
