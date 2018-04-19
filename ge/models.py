@@ -746,7 +746,7 @@ class Circun(models.Model):
     nom_circunscripcion = models.CharField(max_length=100)
     tipo_circun = models.ForeignKey('Tipo_circun')
     #asientos = models.ManyToManyField('Asiento', through='asiento_circun')
-    geom = models.MultiPolygonField(null=True)
+    geom = models.MultiPolygonField(null=True, blank=True)
     objects = models.GeoManager()
 
     def __unicode__(self):
@@ -772,7 +772,7 @@ class Distrito(models.Model):
     fecha_ingreso = models.DateTimeField(default=timezone.now)
     obs = models.CharField(max_length=150, blank=True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
-    geom = models.MultiPolygonField(null=True)
+    geom = models.MultiPolygonField(null=True, blank=True)
     pais = models.ForeignKey(Pais)
     ut_sup = ChainedForeignKey(
         'Ut_sup',
@@ -817,7 +817,7 @@ class Zona(models.Model):
     obs = models.CharField(max_length=120, blank=True, null=True)
     fecha_act = models.DateTimeField(auto_now=True)
     circun = models.ForeignKey(Circun, default=1)
-    geom = models.MultiPolygonField(null=True)
+    geom = models.MultiPolygonField(null=True, blank=True)
 
     pais = models.ForeignKey(Pais)
     ut_sup = ChainedForeignKey(
@@ -910,8 +910,8 @@ class Recinto(models.Model):
         auto_choose=True,
         help_text="Seleccione Asiento Electoral"
     )
-    Asiento_distrito = ChainedForeignKey(
-        'Asiento_distrito',
+    asiento_distrito = ChainedForeignKey(
+        'asiento_distrito',
         chained_field="asiento",
         chained_model_field="asiento",
         show_all=False,
@@ -919,8 +919,8 @@ class Recinto(models.Model):
     )
     zona = ChainedForeignKey(
         'zona',
-        chained_field="Asiento_distrito",
-        chained_model_field="Asiento_distrito",
+        chained_field="asiento_distrito",
+        chained_model_field="asiento_distrito",
         show_all=False,
         auto_choose=True
     )
@@ -1071,7 +1071,7 @@ class Recinto_detalle(models.Model):
         show_all=False,
         auto_choose=True
     )
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100, blank= True, null= True)
     def __unicode__(self):
         return self.descripcion
 

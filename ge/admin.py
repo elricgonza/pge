@@ -297,14 +297,13 @@ class ZonaAdmin(admin.ModelAdmin):
             'fields': ('pais', 'ut_sup', 'ut_basica', 'distrito'
                     )
         }),
+        ('Datos de la Zona', {'fields': ('zona', 'etapa', 'fecha_ingreso', 'obs', 'geom' )
+        }),
         ('Circunscripción', {
             'fields': ('circun',
                     )
         }),
-        ('Datos de la Zona', {'fields': ('zona', 'etapa', 'fecha_ingreso', 'obs', 'geom' )
-        }),
     )
-
 
 # recinto
 
