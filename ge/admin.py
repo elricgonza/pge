@@ -320,8 +320,8 @@ class RecintoAdmin(admin.ModelAdmin):
     list_filter = ('ut_basica',)
     search_fields = ('nom_recinto', 'ut_basica')
     list_display = ('id', 'nom_recinto', 'ubicacion')
-    exclude = ('fecha_act', )
-    readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
+    exclude = ('fecha_act',  )
+    readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash', )
     list_display_links =('id', 'nom_recinto',)
     date_hierarchy = 'fecha_act'
     ordering = ('nom_recinto',)
@@ -329,7 +329,7 @@ class RecintoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Datos Ubicación Geográfica', {
-            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'asiento', 'Asiento_distrito', ('zona', 'direccion'),
+            'fields': ('continente', 'pais', 'ut_sup', 'ut_intermedia', 'ut_basica', 'asiento', ('asiento_distrito', 'distrito'), ('zona', 'direccion'),
                            ('latitud', 'longitud', 'geohash')
                       )
         }),

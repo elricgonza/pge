@@ -911,16 +911,23 @@ class Recinto(models.Model):
         help_text="Seleccione Asiento Electoral"
     )
     asiento_distrito = ChainedForeignKey(
-        'asiento_distrito',
+        'Asiento_distrito',
         chained_field="asiento",
         chained_model_field="asiento",
         show_all=False,
         auto_choose=True
     )
-    zona = ChainedForeignKey(
-        'zona',
+    distrito = ChainedForeignKey(
+        'Distrito',
         chained_field="asiento_distrito",
         chained_model_field="asiento_distrito",
+        show_all=False,
+        auto_choose=True
+    )
+    zona = ChainedForeignKey(
+        'Zona',
+        chained_field="distrito",
+        chained_model_field="distrito",
         show_all=False,
         auto_choose=True
     )
@@ -928,7 +935,7 @@ class Recinto(models.Model):
 
     tipo = models.PositiveSmallIntegerField(
         choices=TIPOS, default=TIPOS.UNIDAD_EDUCATIVA)
-    zona = models.ForeignKey('Zona')
+    #zona = models.ForeignKey('Zona')
     nom_recinto = models.CharField(max_length=100,
                                   verbose_name= 'Nombre de Recinto',
                                   help_text= 'Nombre del Recinto Electoral'
