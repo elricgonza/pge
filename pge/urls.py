@@ -31,9 +31,10 @@ from django.contrib.auth import views
 from ge.forms import LoginForm, CategoriaForm
 from ge.views import home, categoria_new
 
+##    url(r'', include('ge.urls')),
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'', include('ge.urls')),
+    url(r'', include(admin.site.urls)),
     url(r'^login/$', views.login, {'template_name': 'login.html', 'authentication_form': LoginForm}, name='login'),
     url(r'^logout/$', views.logout, {'next_page': '/login'}),
     url(r'^chaining/', include('smart_selects.urls')),
