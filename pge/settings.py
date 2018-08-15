@@ -37,6 +37,7 @@ INSTALLED_APPS = ['ajaximage',
                   'versatileimagefield',
                   'smart_selects',
                   'easyaudit',
+                  'mapwidgets',
                   'ge.apps.GeConfig',
                   'django.contrib.gis',
                   'django.contrib.admin',
@@ -145,3 +146,19 @@ MEDIA_URL = os.path.join(BASE_DIR, '/media/')
 #MEDIA_URL = '/media/'
 #not check with css  STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Widget google maps
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+            ("zoom", 25),
+            ("mapCenterLocationName", "la paz"),
+            ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'bo'}}),
+            ("markerFitZoom", 12),
+        ),
+}
+
+'''
+    "GOOGLE_MAP_API_KEY": 'AIzaSyAct9ypHrEXcded0UOA95ziu1Ex7_l2z-g'
+'''
+
+

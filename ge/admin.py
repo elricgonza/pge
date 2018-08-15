@@ -3,6 +3,7 @@ from django.contrib import admin
 from ge.models import *
 from django.contrib.admin import AdminSite
 import psycopg2
+from mapwidgets.widgets import GooglePointFieldWidget
 
 
 AdminSite.site_title = 'OEP'
@@ -183,6 +184,10 @@ class Asiento_distritoInline(admin.TabularInline):
 
 @admin.register(Asiento)
 class AsientoAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.PointField: {"widget": GooglePointFieldWidget}
+    }
+
     #list_filter = ('ut_basica',)
     list_filter = ('ut_sup',)
     search_fields = ('nom_asiento', 'ut_basica')
@@ -317,6 +322,10 @@ class Recinto_detalleInline(admin.TabularInline):
 
 @admin.register(Recinto)
 class RecintoAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.PointField: {"widget": GooglePointFieldWidget}
+    }
+
     list_filter = ('ut_basica',)
     search_fields = ('nom_recinto', 'ut_basica')
     list_display = ('id', 'nom_recinto', 'ubicacion')
