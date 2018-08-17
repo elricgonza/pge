@@ -128,6 +128,7 @@ class Pais(models.Model):
     class Meta:
         db_table = 'g_pais'
         unique_together = ('id_origen', 'version')
+        verbose_name_plural = 'Paises'
 
     def __unicode__(self):
         return self.nom_pais
@@ -147,6 +148,7 @@ class Nivel_ut(models.Model):
     class Meta:
         db_table = 'g_nivel_ut'
         unique_together = ('id', 'jerarquia')
+        verbose_name_plural= 'Nivel - Unidad Territorial'
 
     def __unicode__(self):
         return self.ut_descripcion
@@ -191,6 +193,7 @@ class Ut_sup(models.Model):
     class Meta:
         db_table = 'g_ut_sup'
         unique_together = ('id_origen', 'version')
+        verbose_name_plural = 'Ud.Territorial Superior - (Departamentos)'
 
     def __unicode__(self):
         return self.nom_ut_sup
@@ -246,6 +249,7 @@ class Ut_intermedia(models.Model):
     class Meta:
         db_table = 'g_ut_intermedia'
         unique_together = ('id_origen', 'version')
+        verbose_name_plural = 'Ud.Territorial Intermedia - (Provincias)'
 
     def __unicode__(self):
         return self.nom_ut_intermedia
@@ -305,6 +309,8 @@ class Ut_basica(models.Model):
     class Meta:
         db_table = 'g_ut_basica'
         unique_together = ('id_origen', 'version')
+        verbose_name_plural = 'Ud.Territorial Básica - (Municipios)'
+
 
     def __unicode__(self):
         return self.nom_ut_basica
@@ -610,6 +616,9 @@ class Asiento_jurisdiccion(models.Model):
     #geom = models.PointField(blank= True, null=True)
     objects = models.GeoManager()
 
+    class Meta:
+        verbose_name_plural = 'Asiento - Jurisdicciones'
+
 
 def path_and_rename(instance, filename):
     upload_to = 'img'
@@ -725,10 +734,14 @@ class Asiento_img(models.Model):
 
     class Meta:
         unique_together = ('asiento', 'vista')
+        verbose_name_plural = 'Asiento - Imágenes'
 
 
 class Tipo_circun(models.Model):
     tipo_circun = models.CharField(max_length=40)
+
+    class Meta:
+        verbose_name_plural= 'Tipos de Circunscripción'
 
     def __unicode__(self):
         return self.tipo_circun
@@ -748,6 +761,9 @@ class Circun(models.Model):
     #asientos = models.ManyToManyField('Asiento', through='asiento_circun')
     geom = models.MultiPolygonField(null=True, blank=True)
     objects = models.GeoManager()
+
+    class Meta:
+        verbose_name_plural = 'Circunscripciones'
 
     def __unicode__(self):
         return self.nom_circunscripcion
@@ -800,6 +816,8 @@ class Asiento_distrito(models.Model):
     asiento = models.ForeignKey(Asiento, on_delete=models.CASCADE)
     distrito = models.ForeignKey(Distrito, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name_plural = 'Asiento - Distritos'
 
     def __unicode__(self):
         return '%s' % self.distrito
@@ -1050,6 +1068,9 @@ class Recinto_img(models.Model):
 class Categoria(models.Model):
     nom_categoria = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name_plural = 'Categorías (Comunicación, Salud,..)'
+
     def __unicode__(self):
         return self.nom_categoria
 
@@ -1063,6 +1084,8 @@ class Subcategoria(models.Model):
     obs = models.CharField(max_length=220,
                           blank= True, null= True
                           )
+    class Meta:
+        verbose_name_plural= 'Subcategorías'
 
     def __unicode__(self):
         return self.nom_subcategoria
