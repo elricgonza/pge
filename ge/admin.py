@@ -4,6 +4,7 @@ from ge.models import *
 from django.contrib.admin import AdminSite
 import psycopg2
 from mapwidgets.widgets import GooglePointFieldWidget
+from django.db import connection
 
 
 AdminSite.site_title = 'OEP'
@@ -104,9 +105,7 @@ class LocalidadAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         try:
-            conn = psycopg2.connect("dbname='geodb' user='uge' host= 'localhost' password= 'f'")
-            cur = conn.cursor()
-            #cur.callproc('st_geohash', ())
+            cur = connection.cursor()
             sql = """
                 select st_SetSRID(st_MakePoint(%s, %s), 4326)
                 """
@@ -225,9 +224,7 @@ class AsientoAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         try:
-            conn = psycopg2.connect("dbname='geodb' user='uge' host= 'localhost' password= 'f'")
-            cur = conn.cursor()
-            #cur.callproc('st_geohash', ())
+            cur = connection.cursor()
             sql = """
                 select st_SetSRID(st_MakePoint(%s, %s), 4326)
                 """
@@ -352,9 +349,7 @@ class RecintoAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         try:
-            conn = psycopg2.connect("dbname='geodb' user='uge' host= 'localhost' password= 'f'")
-            cur = conn.cursor()
-            #cur.callproc('st_geohash', ())
+            cur = connection.cursor()
             sql = """
                 select st_SetSRID(st_MakePoint(%s, %s), 4326)
                 """
