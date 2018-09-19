@@ -68,6 +68,10 @@ def prefetch_idloc(instance):
 
 @admin.register(Localidad)
 class LocalidadAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.PointField: {"widget": GooglePointFieldWidget}
+    }
+
     list_per_page = 30
     #search_fields = ('nom_localidad', 'ut_basica__nom_ut_basica')
     search_fields = ('nom_localidad', )
