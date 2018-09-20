@@ -315,6 +315,8 @@ class Ut_basica(models.Model):
     def __unicode__(self):
         return self.nom_ut_basica
 
+    def ubicacion(self):
+        return '%s - %s - %s' % (self.ut_intermedia.nom_ut_intermedia, self.ut_intermedia.ut_sup.nom_ut_sup, self.ut_intermedia.ut_sup.pais.nom_pais_alias)
 
 class Localidad(models.Model):
     TIPO_LOCALIDAD = Choices(
