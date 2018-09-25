@@ -4,13 +4,6 @@ from ge.models import Recinto, Asiento, Distrito
 from django.db import connection
 
 
-@receiver(post_delete, sender=Asiento)
-def model_post_delete(sender, **kwargs):
-    print('******************************************')
-    print ("ONLY TEST DEL ASIENTO: %s" % str(kwargs['instance'].id) + '---' +  kwargs['instance'].nom_recinto)
-    print('******************************************')
-
-
 @receiver(post_save, sender=Recinto)
 def model_post_save_recinto(sender, **kwargs):
 
@@ -82,7 +75,7 @@ def model_post_save_recinto(sender, **kwargs):
 
 
 @receiver(post_delete, sender=Recinto)
-def model_post_delete(sender, **kwargs):
+def model_post_delete_recinto(sender, **kwargs):
     print('******************************************')
     print ("DELETED: %s" % str(kwargs['instance'].id) + '---' +  kwargs['instance'].nom_recinto)
     print('******************************************')
@@ -94,13 +87,6 @@ def model_post_delete(sender, **kwargs):
             print(type(e))
             print(e.args)
             print(e)
-
-
-@receiver(post_save, sender=Distrito)
-def model_post_save(sender, **kwargs):
-    print('******************************************')
-    print("ONLY TEST post_save DISTRITO:  --- ")
-    print('******************************************')
 
 
 @receiver(post_save, sender=Asiento)
@@ -170,3 +156,19 @@ def model_post_save_asiento(sender, **kwargs):
 
     c1.close
     c2.close
+
+
+@receiver(post_delete, sender=Asiento)
+def model_post_delete_asiento(sender, **kwargs):
+    print('******************************************')
+    print ("DELETED: %s" % str(kwargs['instance'].id) + '---' +  kwargs['instance'].nom_asiento)
+    print('******************************************')
+    with connection.cursor() as cursor:
+        try:
+            sql = "delete from sde._asientos where id = %s;"
+            cursor.execute (sql, (int(kwargs['instance'].id),))
+        except Exception as e:
+            print(type(e))
+            print(e.args)
+            print(e)
+
