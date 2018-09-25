@@ -36,12 +36,19 @@ class PaisAdmin(admin.ModelAdmin):
 class Ut_supAdmin(admin.ModelAdmin):
     search_fields = ('nom_ut_sup', 'pais__nom_pais')
     list_display = ('id', 'nom_ut_sup', 'pais')
+    list_display_links =('id', 'nom_ut_sup',)
+    list_per_page = 20
+    ordering = ('nom_ut_sup',)
 
 
 @admin.register(Ut_intermedia)
 class Ut_intermediaAdmin(admin.ModelAdmin):
     search_fields = ('nom_ut_intermedia', 'ut_sup__nom_ut_sup')
     list_display = ('id', 'nom_ut_intermedia', 'ut_sup')
+    list_display_links =('id', 'nom_ut_intermedia',)
+    list_per_page = 20
+    ordering = ('nom_ut_intermedia',)
+    list_select_related = ('ut_sup',)
 
 
 @admin.register(Ut_basica)
@@ -49,6 +56,8 @@ class Ut_basicaAdmin(admin.ModelAdmin):
     search_fields = ('nom_ut_basica', 'ut_intermedia__nom_ut_intermedia')
     list_display = ('id', 'nom_ut_basica', 'ubicacion')
     list_display_links =('id', 'nom_ut_basica',)
+    list_per_page = 20
+    ordering = ('nom_ut_basica',)
 
 
 def prefetch_idloc(instance):
