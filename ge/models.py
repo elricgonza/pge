@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 def validate_long(value):
-    if (value > -57 or value < -69):
+    if (value > -57.454434 or value < -69.644931):
         raise ValidationError(
             _(' Longitud incorrecta...'),
             params={'value': value},
@@ -22,7 +22,7 @@ def validate_long(value):
 
 
 def validate_lat(value):
-    if (value > -9 or value < -22):
+    if (value > -9.669633 or value < -22.898048):
         raise ValidationError(
             _('Latitud incorrecta...'),
             params={'value': value},
