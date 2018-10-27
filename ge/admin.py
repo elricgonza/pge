@@ -336,6 +336,7 @@ class RecintoAdmin(admin.ModelAdmin):
         models.PointField: {"widget": GooglePointFieldWidget}
     }
 
+    list_per_page = 25
     list_filter = ('ut_basica',)
     search_fields = ('nom_recinto', )
     list_display = ('id', 'nom_recinto', 'ubicacion')
