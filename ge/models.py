@@ -935,21 +935,27 @@ class Recinto(models.Model):
         chained_field="asiento",
         chained_model_field="asiento",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        blank = True,
+        null = True
     )
     distrito = ChainedForeignKey(
         'Distrito',
         chained_field="asiento_distrito",
         chained_model_field="asiento_distrito",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        blank = True,
+        null = True
     )
     zona = ChainedForeignKey(
         'Zona',
         chained_field="distrito",
         chained_model_field="distrito",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        blank = True,
+        null = True
     )
 
 

@@ -199,16 +199,18 @@ class AsientoAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
+    list_per_page = 20
 
-    #list_filter = ('ut_basica',)
-    list_filter = ('ut_sup',)
+    #list_filter = ('ut_sup',)
     search_fields = ('nom_asiento', )
-    list_display = ('id', 'nom_asiento', 'ubicacion')
+    list_select_related = ('ut_basica',)
+    list_display = ('id', 'nom_asiento', 'ut_basica', 'fecha_act')
+    #list_display = ('id', 'nom_asiento', 'ubicacion')
     #exclude = ('fecha_act', 'geom')
     exclude = ('fecha_act', )
     readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash')
     list_display_links =('id', 'nom_asiento',)
-    date_hierarchy = 'fecha_act'
+    #date_hierarchy = 'fecha_act'
     ordering = ('nom_asiento',)
     #raw_id_fields = ('localidad',)
     #+RutaInline  inlines = (Asiento_distritoInline, Asiento_detalleInline, Asiento_imgInline, RutaInline, Asiento_jurisdiccionInline)
@@ -336,14 +338,16 @@ class RecintoAdmin(admin.ModelAdmin):
         models.PointField: {"widget": GooglePointFieldWidget}
     }
 
-    list_per_page = 25
-    list_filter = ('ut_basica',)
+    list_per_page = 20
+    #list_filter = ('ut_basica',)
     search_fields = ('nom_recinto', )
-    list_display = ('id', 'nom_recinto', 'ubicacion')
+    list_select_related = ('ut_basica',)
+    list_display = ('id', 'nom_recinto', 'direccion', 'nro_aulas', 'ut_basica')
+    #list_display = ('id', 'nom_recinto', 'ubicacion')
     exclude = ('fecha_act',  )
     readonly_fields = ('fecha_ingreso', 'fecha_act', 'geohash', )
     list_display_links =('id', 'nom_recinto',)
-    date_hierarchy = 'fecha_act'
+    #date_hierarchy = 'fecha_act'
     ordering = ('nom_recinto',)
     inlines = (Recinto_detalleInline, Recinto_imgInline) #, RutaInline, Asiento_jurisdiccionInline)
 
