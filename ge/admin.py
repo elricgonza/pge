@@ -201,7 +201,7 @@ class AsientoAdmin(admin.ModelAdmin):
     }
     list_per_page = 20
 
-    #list_filter = ('ut_sup',)
+    list_filter = ('ut_sup',)
     search_fields = ('nom_asiento', )
     list_select_related = ('ut_basica',)
     list_display = ('id', 'nom_asiento', 'ut_basica', 'fecha_act')
@@ -339,7 +339,7 @@ class RecintoAdmin(admin.ModelAdmin):
     }
 
     list_per_page = 20
-    #list_filter = ('ut_basica',)
+    list_filter = ('ut_basica',)
     search_fields = ('nom_recinto', )
     list_select_related = ('ut_basica',)
     list_display = ('id', 'nom_recinto', 'direccion', 'nro_aulas', 'ut_basica')
