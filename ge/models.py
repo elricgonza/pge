@@ -310,6 +310,7 @@ class Ut_basica(models.Model):
         db_table = 'g_ut_basica'
         unique_together = ('id_origen', 'version')
         verbose_name_plural = 'Ud.Territorial Básica - (Municipios)'
+        ordering = ('nom_ut_basica',)
 
 
     def __unicode__(self):
