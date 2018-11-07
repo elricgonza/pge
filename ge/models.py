@@ -113,6 +113,7 @@ class Pais(models.Model):
     estado =  models.BooleanField(
             help_text='True si el país participa en procesos electorales')
     continente = models.ForeignKey('Continente')
+    fecha_act = models.DateTimeField(auto_now=True)
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     lat_ref = models.FloatField(
@@ -179,6 +180,7 @@ class Ut_sup(models.Model):
             help_text='Indica si la unidad territorial esta vigente')
     doc_legal = models.CharField(max_length=100,
             help_text='Indica si la unidad territorial esta vigente')
+    fecha_act = models.DateTimeField(auto_now=True)
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     lat_ref = models.FloatField(
@@ -235,6 +237,7 @@ class Ut_intermedia(models.Model):
     )
     ut_intermedia_id = models.IntegerField(
             help_text='Será utilizado para definir más niveles a futuro de ser necesario - recursivo')
+    fecha_act = models.DateTimeField(auto_now=True)
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     lat_ref = models.FloatField(
@@ -295,6 +298,7 @@ class Ut_basica(models.Model):
     doc_legal = models.CharField(max_length=100,
             help_text='Indica si la unidad territorial esta vigente')
     #ut_intermedia = models.ForeignKey('Ut_intermedia')
+    fecha_act = models.DateTimeField(auto_now=True)
     fecha_ingreso = models.DateField(
             help_text='Fecha de ingreso al sistema')
     lat_ref = models.FloatField(
@@ -1017,7 +1021,7 @@ class Recinto(models.Model):
                                         verbose_name='Fecha Ingreso',
                                         help_text='Fecha de ingreso al sistema'
     )
-    fecha_act = models.DateTimeField(auto_now_add=True)
+    fecha_act = models.DateTimeField(auto_now=True)
     obs = models.CharField(max_length=120, blank=True, null=True)
     latitud = models.FloatField(validators=[validate_lat],
                                     help_text='Latitud/Longitud del recinto'
