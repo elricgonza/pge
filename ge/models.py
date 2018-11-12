@@ -38,7 +38,7 @@ def validate_even(value):
 
 
 def validate_max_mesas(value):
-    if value < 1 or value > 100:
+    if value < 0 or value > 100:
         raise ValidationError(
             _('%(value)s Rango inválido...'),
             params={'value': value},
@@ -52,7 +52,7 @@ def validate_nro_pisos(value):
         )
 
 def validate_nro_aulas(value):
-    if value < 1 or value > 50:
+    if value < 0 or value > 50:
         raise ValidationError(
             _('%(value)s Rango inválido...'),
             params={'value': value},
