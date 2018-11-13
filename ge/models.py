@@ -195,7 +195,7 @@ class Ut_sup(models.Model):
     class Meta:
         db_table = 'g_ut_sup'
         unique_together = ('id_origen', 'version')
-        verbose_name_plural = 'Ud.Territorial Superior - (Departamentos)'
+        verbose_name_plural = 'Departamentos (Ud.Territorial Superior)'
 
     def __unicode__(self):
         return self.nom_ut_sup
@@ -252,7 +252,7 @@ class Ut_intermedia(models.Model):
     class Meta:
         db_table = 'g_ut_intermedia'
         unique_together = ('id_origen', 'version')
-        verbose_name_plural = 'Ud.Territorial Intermedia - (Provincias)'
+        verbose_name_plural = 'Provincias (Ud.Territorial Intermedia)'
 
     def __unicode__(self):
         return self.nom_ut_intermedia
@@ -313,7 +313,7 @@ class Ut_basica(models.Model):
     class Meta:
         db_table = 'g_ut_basica'
         unique_together = ('id_origen', 'version')
-        verbose_name_plural = 'Ud.Territorial Básica - (Municipios)'
+        verbose_name_plural = 'Municipios (Ud.Territorial Básica)'
         ordering = ('nom_ut_basica',)
 
 
@@ -335,28 +335,35 @@ class Localidad(models.Model):
         chained_field="continente",
         chained_model_field="continente",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'País'
     )
     ut_sup = ChainedForeignKey(
         'Ut_sup',
         chained_field="pais",
         chained_model_field="pais",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Departamento',
+        help_text = 'Equivalente a Ud. Territorial Superior (para el exterior)',
     )
     ut_intermedia = ChainedForeignKey(
         'Ut_intermedia',
         chained_field="ut_sup",
         chained_model_field="ut_sup",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Provincia',
+        help_text = 'Equivalente a Ud. Territorial Intermedia (para el exterior)',
     )
     ut_basica = ChainedForeignKey(
         'Ut_basica',
         chained_field="ut_intermedia",
         chained_model_field="ut_intermedia",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Municipio',
+        help_text = 'Equivalente a Ud. Territorial Básica (para el exterior)',
     )
     id_origen = models.IntegerField()
     version = models.PositiveSmallIntegerField()
@@ -456,28 +463,35 @@ class Asiento(models.Model):
         chained_field="continente",
         chained_model_field="continente",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'País'
     )
     ut_sup = ChainedForeignKey(
         'Ut_sup',
         chained_field="pais",
         chained_model_field="pais",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Departamento',
+        help_text = 'Equivalente a Ud. Territorial Superior (para el exterior)',
     )
     ut_intermedia = ChainedForeignKey(
         'Ut_intermedia',
         chained_field="ut_sup",
         chained_model_field="ut_sup",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Provincia',
+        help_text = 'Equivalente a Ud. Territorial Intermedia (para el exterior)',
     )
     ut_basica = ChainedForeignKey(
         'Ut_basica',
         chained_field="ut_intermedia",
         chained_model_field="ut_intermedia",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Municipio',
+        help_text = 'Equivalente a Ud. Territorial Básica (para el exterior)',
     )
     localidad = ChainedForeignKey(
         'Localidad',
@@ -904,28 +918,35 @@ class Recinto(models.Model):
         chained_field="continente",
         chained_model_field="continente",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'País'
     )
     ut_sup = ChainedForeignKey(
         'Ut_sup',
         chained_field="pais",
         chained_model_field="pais",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Departamento',
+        help_text = 'Equivalente a Ud. Territorial Superior (para el exterior)',
     )
     ut_intermedia = ChainedForeignKey(
         'Ut_intermedia',
         chained_field="ut_sup",
         chained_model_field="ut_sup",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Provincia',
+        help_text = 'Equivalente a Ud. Territorial Intermedia (para el exterior)',
     )
     ut_basica = ChainedForeignKey(
         'Ut_basica',
         chained_field="ut_intermedia",
         chained_model_field="ut_intermedia",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Municipio',
+        help_text = 'Equivalente a Ud. Territorial Básica (para el exterior)',
     )
     asiento = ChainedForeignKey(
         'Asiento',

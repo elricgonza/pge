@@ -390,6 +390,9 @@ class RecintoAdmin(admin.ModelAdmin):
 
 @admin.register(Circun)
 class CircunAdmin(admin.ModelAdmin):
+    list_per_page = 20
+    list_display_links =('id', 'nom_circunscripcion',)
+    ordering = ('id',)
     search_fields = ('id', 'nom_circunscripcion',)
     list_display = ('id', 'nom_circunscripcion', 'tipo_circun')
 
