@@ -303,7 +303,7 @@ class Asiento_jurisdiccion(admin.ModelAdmin):
 
 @admin.register(Zona)
 class ZonaAdmin(admin.ModelAdmin):
-    search_fields = ('zona', 'distrito', 'ut_basica')
+    search_fields = ('zona', )
     list_display = ('id', 'zona', 'fecha_ingreso', 'ubicacion')
     exclude = ('fecha_act',)
     readonly_fields = ('fecha_ingreso', 'fecha_act')
