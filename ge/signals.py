@@ -78,7 +78,7 @@ def model_post_save_recinto(sender, **kwargs):
 @receiver(post_delete, sender=Recinto)
 def model_post_delete_recinto(sender, **kwargs):
     print('******************************************')
-    print ("DELETED: %s" % str(kwargs['instance'].id) + '---' +  kwargs['instance'].nom_recinto)
+    print ("DELETED: %s" % str(kwargs['instance'].id) + '---') # +  kwargs['instance'].nom_recinto)
     print('******************************************')
     with connection.cursor() as cursor:
         try:
@@ -162,7 +162,7 @@ def model_post_save_asiento(sender, **kwargs):
 @receiver(post_delete, sender=Asiento)
 def model_post_delete_asiento(sender, **kwargs):
     print('******************************************')
-    print ("DELETED: %s" % str(kwargs['instance'].id) + '---' +  kwargs['instance'].nom_asiento)
+    print ("DELETED: %s" % str(kwargs['instance'].id) + '---')  # + kwargs['instance'].nom_asiento)
     print('******************************************')
     with connection.cursor() as cursor:
         try:
